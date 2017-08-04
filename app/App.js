@@ -8,6 +8,8 @@ import {
     StackNavigator,
     TabNavigator
 } from 'react-navigation';
+
+import TabBar from './components/TabBar';
 import {Image, StyleSheet,Button,Text} from 'react-native';
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator';
 import Index from './views/Index';
@@ -18,91 +20,95 @@ import Me from './views/Me';
 import List from './views/List';
 import Test from './views/Test';
 
-let TabRouteConfigs = {
-    Index: {
-        screen: Index
-    },
-    Choice: {
-        screen: Choice,
-        navigationOptions: {
-            headerTitle: "精选",
-            tabBarLabel: "精选",
-            tabBarIcon: ({tintColor}) => (
-                <Image
-                    source={require('../assets/images/item-select.png')}
-                    style={[styles.icon, {tintColor: tintColor}]}
-                />
-            )
-        }
-    },
-    Rank: {
-        screen: Rank,
-        navigationOptions: {
-            headerTitle: "等级",
-            tabBarLabel: "等级",
-            tabBarIcon: ({tintColor}) => (
-                <Image
-                    source={require('../assets/images/item-select.png')}
-                    style={[styles.icon, {tintColor: tintColor}]}
-                />
-            )
-        }
-    },
-    Category: {
-        screen: Category,
-        navigationOptions: {
-            headerTitle: "分类",
-            tabBarLabel: "分类",
-            tabBarIcon: ({tintColor}) => (
-                <Image
-                    source={require('../assets/images/item-select.png')}
-                    style={[styles.icon, {tintColor: tintColor}]}
-                />
-            )
-        }
-    },
-    Me: {
-        screen: Me,
-        navigationOptions: {
-            headerTitle: "我的",
-            tabBarLabel: "我的",
-            tabBarIcon: ({tintColor}) => (
-                <Image
-                    source={require('../assets/images/item-select.png')}
-                    style={[styles.icon, {tintColor: tintColor}]}
-                />
-            )
-        }
-    }
-}
-let TabNavigatorConfig = {
-    tabBarPosition: 'bottom',
-    swipeEnabled: true,
-    lazy: true,
-    tabBarOptions: {
-        activeTintColor: '#e91e63'
-    },
-
-    headerMode: 'float',
-    transitionConfig:()=>({
-        screenInterpolator:CardStackStyleInterpolator.forHorizontal,
-    })
-}
-const Tabs = TabNavigator(TabRouteConfigs, TabNavigatorConfig);
+// let TabRouteConfigs = {
+//     Index: {
+//         screen: Index
+//     },
+//     Choice: {
+//         screen: Choice,
+//         navigationOptions: {
+//             headerTitle: "精选",
+//             tabBarLabel: "精选",
+//             tabBarIcon: ({tintColor}) => (
+//                 <Image
+//                     source={require('../assets/images/item-select.png')}
+//                     style={[styles.icon, {tintColor: tintColor}]}
+//                 />
+//             )
+//         }
+//     },
+//     Rank: {
+//         screen: Rank,
+//         navigationOptions: {
+//             headerTitle: "等级",
+//             tabBarLabel: "等级",
+//             tabBarIcon: ({tintColor}) => (
+//                 <Image
+//                     source={require('../assets/images/item-select.png')}
+//                     style={[styles.icon, {tintColor: tintColor}]}
+//                 />
+//             )
+//         }
+//     },
+//     Category: {
+//         screen: Category,
+//         navigationOptions: {
+//             headerTitle: "分类",
+//             tabBarLabel: "分类",
+//             tabBarIcon: ({tintColor}) => (
+//                 <Image
+//                     source={require('../assets/images/item-select.png')}
+//                     style={[styles.icon, {tintColor: tintColor}]}
+//                 />
+//             )
+//         }
+//     },
+//     Me: {
+//         screen: Me,
+//         navigationOptions: {
+//             headerTitle: "我的",
+//             tabBarLabel: "我的",
+//             tabBarIcon: ({tintColor}) => (
+//                 <Image
+//                     source={require('../assets/images/item-select.png')}
+//                     style={[styles.icon, {tintColor: tintColor}]}
+//                 />
+//             )
+//         }
+//     }
+// }
+// let TabNavigatorConfig = {
+//     tabBarPosition: 'bottom',
+//     swipeEnabled: true,
+//     lazy: true,
+//     tabBarOptions: {
+//         activeTintColor: '#e91e63'
+//     },
+//
+//     headerMode: 'float',
+//     transitionConfig:()=>({
+//         screenInterpolator:CardStackStyleInterpolator.forHorizontal,
+//     })
+// }
+// const Tabs = TabNavigator(TabRouteConfigs, TabNavigatorConfig);
 let AppRouteConfigs = {
     Home: {
-        screen: Tabs
-        // ,
-        // navigationOptions: ({ navigation }) => ({
-        //     // headerTitle: `Chat with ${navigation.state.params.user}`,
-        // })
-
+        screen: TabBar,
+        navigationOptions: ({ navigation }) => ({
+            headerTitle: null
+        })
     },
     Test:{
         screen: Test,
+        navigationOptions: ({ navigation }) => ({
+            headerTitle: `测试`,
+        })
     },
     List:{
         screen: List,
+        navigationOptions: ({ navigation }) => ({
+            headerTitle: `列表`,
+        })
     }
 }
 let AppNavigatorConfig = {
