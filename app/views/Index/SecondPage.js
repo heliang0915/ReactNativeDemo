@@ -7,16 +7,19 @@
 import React,{Component} from 'react';
 import {View,Text} from 'react-native';
 
-class Test extends Component {
+class SecondPage extends Component {
+    componentWillMount(){
+        // alert("Test Will Mount");
+    }
     render(){
         return(
             <View>
                 <Text>
-                    Test
+                    {this.props.navigation.state.params.id}----- Test
                 </Text>
             </View>
         )
     }
 }
 
-export default Test;
+export default SecondPage;

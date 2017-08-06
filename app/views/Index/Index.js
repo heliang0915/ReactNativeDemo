@@ -5,9 +5,12 @@
  */
 import React, {Component} from 'react';
 import {View, Text, Image, Button, StyleSheet} from 'react-native';
-
 class Index extends Component {
-
+   state={
+       list:[{
+           name:"张三"
+       }]
+   }
     // static  navigationOptions = ({navigation, screenProps}) => ({
     //     title: navigation.state.params == null ? "1" : navigation.state.params.title,
     //     headerLeft: (
@@ -59,20 +62,28 @@ class Index extends Component {
     //     });
     // }
 
-
+    jumpToTest(){
+      let {navigate} = this.props.navigation;
+      navigate("IndexSecond",{
+          id:"123"
+      })
+    }
+    renderList(){
+       let ary=[];
+        this.state.list.forEach((item,index)=>{
+            ary.push( <Text onPress={this.jumpToTest.bind(this)} key={index}>{item.name}</Text>)
+        })
+        return ary;
+    }
     render() {
         return (
             <View>
                 <Text>首页</Text>
+                {
+                   this.renderList()
+                }
             </View>
         )
     }
 }
-
-const styles = StyleSheet.create({
-    icon: {
-        width: 26,
-        height: 26,
-    },
-});
 export default Index;

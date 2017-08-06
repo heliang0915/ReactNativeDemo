@@ -3,6 +3,7 @@
  * https://github.com/facebook/react-native
  * @flow
  */
+
 import React, { Component } from 'react';
 import {
     AppRegistry,
@@ -11,6 +12,6 @@ import {
     View
 } from 'react-native';
 
-import App from './app/App'
+import App from './app/components/TabBar'
 
 AppRegistry.registerComponent('ReactNatDemo', ()=>App);

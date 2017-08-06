@@ -12,6 +12,6 @@ import {
   View
 } from 'react-native';
 
-import App from './app/App'
+import App from './app/components/TabBar'
 
 AppRegistry.registerComponent('ReactNatDemo', ()=>App);

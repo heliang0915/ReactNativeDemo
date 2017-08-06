@@ -6,11 +6,9 @@
 import React, {Component} from 'react';
 import {Text, StyleSheet,Navigator, View, Image} from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
-import Index from '../views/Index';
-import Choice from '../views/Choice';
-import Rank from '../views/Rank';
-import Category from '../views/Category';
-import Me from '../views/Me';
+import Me from '../views/Me/Me';
+import {HomeNavigator,ChoiceNavigator,CategoryNavigator,RankNavigator} from '../views/Navigator';
+
 
 let tabBarMap=[{
     title:"书架",
@@ -18,28 +16,28 @@ let tabBarMap=[{
     selectIcon:"&#xe742;",
     badgeText:"1",
     index:1,
-    component:Index
+    component:HomeNavigator
 },{
     title:"精选",
     icon:"&#xe660;",
     selectIcon:"&#xe660;",
     badgeText:"1",
     index:2,
-    component:Choice
+    component:ChoiceNavigator
 },{
     title:"排行",
     icon:"&#xe660;",
     selectIcon:"&#xe660;",
     badgeText:"1",
     index:3,
-    component:Rank
+    component:RankNavigator
 },{
     title:"分类",
     icon:"&#xe660;",
     selectIcon:"&#xe660;",
     badgeText:"1",
     index:4,
-    component:Category
+    component:CategoryNavigator
 },{
     title:"我的",
     icon:"&#xe660;",
@@ -54,44 +52,41 @@ export default class TabBar extends Component {
     state = {
         selectedIndex: 1
     }
-
     //导航信息
-    static  navigationOptions = ({navigation, screenProps}) => ({
-        // headerLeft: (
-        //     <Text style={{paddingLeft:4}} onPress={navigation.state.params == null ? () => {
-        //
-        //     } :()=>{
-        //
-        //         let {navigate}=navigation;
-        //         navigate('Test',{
-        //             title:'哈哈'
-        //         });
-        //
-        //     }}>返回</Text>
-        // ),
-
-        headerRight: (
-            <Text style={{paddingRight:4}} onPress={navigation.state.params == null ? () => {
-            } : ()=>{
-                let {navigate}=navigation;
-                navigate('List',{
-                    title:'列表'
-                });
-            }}>
-                下一步
-            </Text>
-        ),
-        headerBackTitle:"返回",
-        tabBarLabel: "首页",
-        tabBarIcon: ({tintColor}) => (
-            <Image
-                source={require('../../assets/images/item-select.png')}
-                style={[styles.icon, {tintColor: tintColor}]}
-            />
-        )
-    })
-
-
+    // static  navigationOptions = ({navigation, screenProps}) => ({
+    //     // headerLeft: (
+    //     //     <Text style={{paddingLeft:4}} onPress={navigation.state.params == null ? () => {
+    //     //
+    //     //     } :()=>{
+    //     //
+    //     //         let {navigate}=navigation;
+    //     //         navigate('Test',{
+    //     //             title:'哈哈'
+    //     //         });
+    //     //
+    //     //     }}>返回</Text>
+    //     // ),
+    //
+    //     headerRight: (
+    //         <Text style={{paddingRight:4}} onPress={navigation.state.params == null ? () => {
+    //         } : ()=>{
+    //             let {navigate}=navigation;
+    //             navigate('List',{
+    //                 title:'列表'
+    //             });
+    //         }}>
+    //             下一步
+    //         </Text>
+    //     ),
+    //     headerBackTitle:"返回",
+    //     tabBarLabel: "首页",
+    //     tabBarIcon: ({tintColor}) => (
+    //         <Image
+    //             source={require('../../assets/images/item-select.png')}
+    //             style={[styles.icon, {tintColor: tintColor}]}
+    //         />
+    //     )
+    // })
 
     renderItem(item,i){
         let {title,icon,selectIcon,badgeText,index,component}=item;
@@ -133,7 +128,7 @@ const styles = StyleSheet.create({
     container: {
         width:"100%",
         height:'100%',
-        paddingTop:20,
+        // paddingTop:20,
         backgroundColor: '#FFF',
     },
     tab: {
