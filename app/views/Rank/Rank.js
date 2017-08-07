@@ -10,7 +10,7 @@ class Rank extends Component {
 
     render(){
         return(
-            <View>
+            <View style={styles.container}>
                 <Text>
                     等级
                 </Text>
@@ -18,7 +18,13 @@ class Rank extends Component {
         )
     }
 }
+
 const styles = StyleSheet.create({
+    container: {
+        width: "100%",
+        height: '100%',
+        backgroundColor: '#FFF',
+    },
     icon: {
         width: 26,
         height: 26,

@@ -11,7 +11,7 @@ class Me extends Component {
 
     render(){
         return(
-            <View>
+            <View style={styles.container}>
                 <Text>
                     我的11111
                 </Text>
@@ -20,6 +20,9 @@ class Me extends Component {
     }
 }
 const styles = StyleSheet.create({
+    container:{
+      backgroundColor:'#FFF'
+    },
     icon: {
         width: 26,
         height: 26,

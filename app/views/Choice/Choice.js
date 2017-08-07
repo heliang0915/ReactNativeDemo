@@ -10,7 +10,7 @@ class Choice extends Component {
 
     render(){
         return(
-            <View>
+            <View style={styles.container}>
                 <Text>
                     精选
                 </Text>
@@ -18,7 +18,13 @@ class Choice extends Component {
         )
     }
 }
+
 const styles = StyleSheet.create({
+    container: {
+        width: "100%",
+        height: '100%',
+        backgroundColor: '#FFF',
+    },
     icon: {
         width: 26,
         height: 26,

@@ -8,42 +8,42 @@ import {Text, StyleSheet,Navigator, View, Image} from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import Me from '../views/Me/Me';
 import {HomeNavigator,ChoiceNavigator,CategoryNavigator,RankNavigator} from '../views/Navigator';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 
 let tabBarMap=[{
     title:"书架",
-    icon:"&#xe742;",
-    selectIcon:"&#xe742;",
+    icon:"ios-trophy",
     badgeText:"1",
     index:1,
+    size:24,
     component:HomeNavigator
 },{
     title:"精选",
-    icon:"&#xe660;",
-    selectIcon:"&#xe660;",
+    icon:"ios-planet",
     badgeText:"1",
     index:2,
+    size:28,
     component:ChoiceNavigator
 },{
     title:"排行",
-    icon:"&#xe660;",
-    selectIcon:"&#xe660;",
+    icon:"ios-ribbon",
     badgeText:"1",
     index:3,
+    size:28,
     component:RankNavigator
 },{
     title:"分类",
-    icon:"&#xe660;",
-    selectIcon:"&#xe660;",
+    icon:"ios-pie",
     badgeText:"1",
     index:4,
+    size:24,
     component:CategoryNavigator
 },{
     title:"我的",
-    icon:"&#xe660;",
-    selectIcon:"&#xe660;",
+    icon:"ios-person",
     badgeText:"1",
     index:5,
+    size:28,
     component:Me
 }]
 
@@ -93,10 +93,11 @@ export default class TabBar extends Component {
         var Component=component;
         return(
             <TabNavigator.Item key={i}
+                tabStyle={styles.tabItem}
                 selected={this.state.selectedIndex == index}
                 title={title}
-                renderIcon={() =>  <Image style={styles.tabIcon} source={require('../../assets/images/item.png')}  />}
-                renderSelectedIcon={() => <Image style={styles.tabIcon} source={require('../../assets/images/item-select.png')}  />}
+                renderIcon={() => <Icon name={item.icon} size={item.size} color="#ccc" />}
+                renderSelectedIcon={() => <Icon name={item.icon} size={item.size} color="red" />}
                 // badgeText={badgeText}
                 onPress={() => this.setState({selectedIndex: index,title})}>
                 <Component/>
@@ -134,20 +135,25 @@ const styles = StyleSheet.create({
     tab: {
         height: 50,
         width:"100%",
-        marginBottom:10,
+        marginTop:5,
+        marginBottom:5,
         backgroundColor: '#FFF',
         flex:1
     },
-    tabIcon: {
-        width: 25,
-        height: 25,
-        marginTop: 0,
-        marginBottom:0
-    },
-    selectedTabIcon: {
-        width: 25,
-        height: 25,
-        marginTop: 0,
-        color:"red",
+    tabItem:{
+        // marginTop:10
     }
+    // ,
+    // tabIcon: {
+    //     width: 25,
+    //     height: 25,
+    //     marginTop: 0,
+    //     marginBottom:0
+    // },
+    // selectedTabIcon: {
+    //     width: 25,
+    //     height: 25,
+    //     marginTop: 0,
+    //     color:"red",
+    // }
 });

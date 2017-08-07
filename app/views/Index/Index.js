@@ -5,6 +5,7 @@
  */
 import React, {Component} from 'react';
 import {View, Text, Image, Button, StyleSheet} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 class Index extends Component {
    state={
        list:[{
@@ -77,7 +78,8 @@ class Index extends Component {
     }
     render() {
         return (
-            <View>
+            <View style={styles.container}>
+                <Icon name="ios-trophy" size={30} color="#900" />
                 <Text>首页</Text>
                 {
                    this.renderList()
@@ -86,4 +88,11 @@ class Index extends Component {
         )
     }
 }
+const styles = StyleSheet.create({
+    container: {
+        width: "100%",
+        height: '100%',
+        backgroundColor: '#FFF',
+    }
+});
 export default Index;

@@ -31,7 +31,7 @@ let Style=StyleSheet.create({
 })
 let NavOptions=Object.assign({},{
     headerTitle: '首页',
-    headerBackTitle:"返回",
+    headerBackTitle:null,
     headerStyle:Style.headerStyle,
     headerTitleStyle:Style.headerTitleStyle,
     headerTintColor:"#FFF",
@@ -39,7 +39,7 @@ let NavOptions=Object.assign({},{
       paddingLeft:-10
     },
     headerBackTitleStyle:{
-        fontSize:30
+        // fontSize:15
     }
 })
 

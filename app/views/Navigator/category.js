@@ -3,12 +3,12 @@
  */
 import React from 'react';
 import {StackNavigator} from 'react-navigation';
-import Choice from '../Choice/Choice';
 import SecondPage from '../Index/SecondPage';
 import {AppNavigatorConfig,NavOptions} from './commonConfig';
+import Category from "../Category/Category";
 
-let rankOpt=Object.assign({},NavOptions,{
-    headerTitle: '排行',
+let categoryOpt=Object.assign({},NavOptions,{
+    headerTitle: '分类',
 })
 let secondOpt=Object.assign({},NavOptions,{
     headerTitle: '测试',
@@ -16,8 +16,8 @@ let secondOpt=Object.assign({},NavOptions,{
 
 let AppRouteConfigs = {
     Home: {
-        screen: Choice,
-        navigationOptions: rankOpt
+        screen: Category,
+        navigationOptions: categoryOpt
     },
     IndexSecond:{
         screen: SecondPage,
