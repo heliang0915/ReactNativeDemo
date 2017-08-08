@@ -4,7 +4,7 @@
 import {StyleSheet} from 'react-native';
 // 先引入这个方法
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator';
-
+import pxToDp from '../../util/pxToDp'
 let AppNavigatorConfig = {
     mode: "card",
     headerMode: 'screen',
@@ -26,7 +26,7 @@ let Style=StyleSheet.create({
     headerTitleStyle:{
         alignSelf:'center',
         fontWeight:'100',
-        fontSize:15
+        fontSize:pxToDp(15)
     }
 })
 let NavOptions=Object.assign({},{

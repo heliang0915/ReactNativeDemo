@@ -5,12 +5,13 @@
  */
 import React,{Component} from 'react';
 import {View,Text,Image,StyleSheet} from 'react-native';
+import commonStyle from '../../commonstyle/common';
 
 class Category extends Component {
     render(){
         return(
-            <View style={styles.container}>
-                <Text>
+            <View style={commonStyle.container}>
+                <Text style={commonStyle.f14}>
                     分类
                 </Text>
             </View>

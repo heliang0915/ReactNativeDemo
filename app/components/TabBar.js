@@ -9,41 +9,41 @@ import TabNavigator from 'react-native-tab-navigator';
 import Me from '../views/Me/Me';
 import {HomeNavigator,ChoiceNavigator,CategoryNavigator,RankNavigator} from '../views/Navigator';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import pxToDp from '../util/pxToDp'
 let tabBarMap=[{
     title:"书架",
     icon:"ios-trophy",
     badgeText:"1",
     index:1,
-    size:24,
+    size:pxToDp(24),
     component:HomeNavigator
 },{
     title:"精选",
     icon:"ios-planet",
     badgeText:"1",
     index:2,
-    size:28,
+    size:pxToDp(28),
     component:ChoiceNavigator
 },{
     title:"排行",
     icon:"ios-ribbon",
     badgeText:"1",
     index:3,
-    size:28,
+    size:pxToDp(28),
     component:RankNavigator
 },{
     title:"分类",
     icon:"ios-pie",
     badgeText:"1",
     index:4,
-    size:24,
+    size:pxToDp(24),
     component:CategoryNavigator
 },{
     title:"我的",
     icon:"ios-person",
     badgeText:"1",
     index:5,
-    size:28,
+    size:pxToDp(28),
     component:Me
 }]
 
@@ -96,6 +96,7 @@ export default class TabBar extends Component {
                 tabStyle={styles.tabItem}
                 selected={this.state.selectedIndex == index}
                 title={title}
+                titleStyle={styles.tabText}
                 renderIcon={() => <Icon name={item.icon} size={item.size} color="#ccc" />}
                 renderSelectedIcon={() => <Icon name={item.icon} size={item.size} color="red" />}
                 // badgeText={badgeText}
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
     },
     tab: {
-        height: 50,
+        height: pxToDp(50),
         width:"100%",
         marginTop:5,
         marginBottom:5,
@@ -142,6 +143,9 @@ const styles = StyleSheet.create({
     },
     tabItem:{
         // marginTop:10
+    },
+    tabText:{
+        fontSize:pxToDp(12)
     }
     // ,
     // tabIcon: {

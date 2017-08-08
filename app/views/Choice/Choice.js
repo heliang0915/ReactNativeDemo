@@ -5,9 +5,9 @@
  */
 import React,{Component} from 'react';
 import {View,Text,Image,StyleSheet} from 'react-native';
+import pxToDp from '../../util/pxToDp';
+
 class Choice extends Component {
-
-
     render(){
         return(
             <View style={styles.container}>
