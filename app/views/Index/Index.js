@@ -6,6 +6,9 @@
 import React, {Component} from 'react';
 import {View, Text, Image, Button, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import TabBar from "../../components/TabBar";
+import pxToDp from '../../util/pxToDp'
+
 class Index extends Component {
    state={
        list:[{
@@ -76,14 +79,28 @@ class Index extends Component {
         })
         return ary;
     }
+
+    renderItemList(){
+         let ary=[];
+         for(var i=0;i<10;i++){
+             ary.push(<View  key={i}  style={styles.bookItem}>
+                 <Image style={styles.bookImg} resizeMode={Image.resizeMode.contain} source={require('../../assets/3.jpg')} />
+             </View>);
+         }
+         return ary;
+    }
+
     render() {
         return (
             <View style={styles.container}>
-                <Icon name="ios-trophy" size={30} color="#900" />
-                <Text>首页</Text>
-                {
-                   this.renderList()
-                }
+                <View style={styles.containerInner}>
+                    {this.renderItemList()}
+                </View>
+                {/*<Icon name="ios-trophy" size={30} color="#900" />*/}
+                {/*<Text>首页</Text>*/}
+                {/*{*/}
+                   {/*this.renderList()*/}
+                {/*}*/}
             </View>
         )
     }
@@ -92,7 +109,33 @@ const styles = StyleSheet.create({
     container: {
         width: "100%",
         height: '100%',
-        backgroundColor: '#FFF',
+        backgroundColor: '#FFF'
+    },
+    containerInner:{
+        marginTop:pxToDp(20),
+        marginLeft:pxToDp(35),
+        marginRight:pxToDp(35),
+        flexWrap:"wrap",
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center'
+    },
+    bookItem:{
+        marginTop:pxToDp(40),
+        height:pxToDp(241),
+        width:pxToDp(185),
+        // backgroundColor:'red',
+        alignItems:'center',
+        justifyContent:'center',
+
+    },
+    bookItemTxt:{
+        color:'#FFF'
+    },
+    bookImg:{
+        height:pxToDp(241),
+        width:pxToDp(185),
     }
+
 });
 export default Index;
