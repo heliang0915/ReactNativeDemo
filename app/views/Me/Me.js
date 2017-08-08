@@ -6,26 +6,19 @@
 
 import React,{Component} from 'react';
 import {View,Text,Image,StyleSheet} from 'react-native';
+import commonStyle from '../../commonstyle/common';
 
 class Me extends Component {
 
     render(){
         return(
-            <View style={styles.container}>
-                <Text>
+            <View style={commonStyle.container}>
+                <Text style={commonStyle.f14}>
                     我的11111
                 </Text>
             </View>
         )
     }
 }
-const styles = StyleSheet.create({
-    container:{
-      backgroundColor:'#FFF'
-    },
-    icon: {
-        width: 26,
-        height: 26,
-    },
-});
+
 export default Me;

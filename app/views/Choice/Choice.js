@@ -5,13 +5,13 @@
  */
 import React,{Component} from 'react';
 import {View,Text,Image,StyleSheet} from 'react-native';
-import pxToDp from '../../util/pxToDp';
+import commonStyle from '../../commonstyle/common';
 
 class Choice extends Component {
     render(){
         return(
-            <View style={styles.container}>
-                <Text>
+            <View style={commonStyle.container}>
+                <Text  style={commonStyle.f14}>
                     精选
                 </Text>
             </View>
@@ -19,15 +19,4 @@ class Choice extends Component {
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        width: "100%",
-        height: '100%',
-        backgroundColor: '#FFF',
-    },
-    icon: {
-        width: 26,
-        height: 26,
-    },
-});
 export default Choice;
