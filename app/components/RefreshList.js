@@ -69,6 +69,12 @@ class RefreshList extends Component {
         this.getList("refresh");
     }
 
+    renderFooter(){
+        return (<View>
+            <Text>数据加载中...</Text>
+        </View>)
+    }
+
     onEndReached(){
         this.getList();
     }
@@ -76,7 +82,7 @@ class RefreshList extends Component {
         let {styles}=this.props;
         console.log('render>>>');
         return(
-            <View style={{height:'97.5%'}}>
+            <View style={{height:'90.5%'}}>
                 <Text>
                     {this.state.list.length}
                 </Text>
@@ -87,7 +93,7 @@ class RefreshList extends Component {
                           data={this.state.list}
                           renderItem={this.renderItem}
                     // ListHeaderComponent={this.renderHeader()}
-                    // ListFooterComponent={this.renderFooter()}
+                        ListFooterComponent={this.renderFooter()}
                           ListEmptyComponent={this.emptyComponent()}
                           onEndReachedThreshold={0.8}
                           // onRefresh={this.onRefresh.bind(this)}
