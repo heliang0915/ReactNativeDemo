@@ -8,7 +8,6 @@ import {View,Text,Image,StyleSheet} from 'react-native';
 import commonStyle from '../../commonstyle/common';
 
 class Rank extends Component {
-
     render(){
         return(
             <View style={commonStyle.container}>

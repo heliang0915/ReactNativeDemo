@@ -3,7 +3,7 @@ import {View,Text,Image,StyleSheet} from 'react-native';
 import pxToDp from '../util/pxToDp'
 
 let mainBg="#FFF";
-let mainColor="#ff3131"; //主色调
+let mainColor="#fd3653"; //主色调
 
 
 const commonStyle = StyleSheet.create({
@@ -11,7 +11,8 @@ const commonStyle = StyleSheet.create({
         width: "100%",
         height: '100%',
         backgroundColor: mainBg,
-        flex:1
+        flex:1,
+
     },
     f14: {
         fontSize:pxToDp(32)

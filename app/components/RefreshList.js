@@ -4,16 +4,17 @@
  * Date: 2017/8/3.
  */
 import React,{Component} from 'react';
-import {View,Text,FlatList} from 'react-native';
+import {View,Text,FlatList,StyleSheet} from 'react-native';
+import pxToDp from "../util/pxToDp";
 class RefreshList extends Component {
     state={
         list:[],
         refreshing:false,
         page:1,
-        pageSize:12
+        pageSize:12,
+        total:99
     }
     shouldComponentUpdate(nextProps, nextState){
-            console.log(nextState);
             return nextState.list.length!=this.state.list.length;
     }
     componentWillMount(){
@@ -27,6 +28,7 @@ class RefreshList extends Component {
         })
         if(type=="refresh"){
             url+=`?_page=1&_limit=${pageSize}`;
+            page=1;
         }else{
             page++;
             url+=`?_page=${page}&_limit=${pageSize}`;
@@ -70,8 +72,14 @@ class RefreshList extends Component {
     }
 
     renderFooter(){
+        let loadMsg="数据加载中...";
+        let {list,total}=this.state;
+        // alert('footer');
+        if(list.length==total){
+            loadMsg="没有更多数据"
+        }
         return (<View>
-            <Text>数据加载中...</Text>
+            <Text style={style.moreText}>{loadMsg}</Text>
         </View>)
     }
 
@@ -80,12 +88,9 @@ class RefreshList extends Component {
     }
     render(){
         let {styles}=this.props;
-        console.log('render>>>');
+        // console.log('render>>>');
         return(
-            <View style={{height:'90.5%'}}>
-                <Text>
-                    {this.state.list.length}
-                </Text>
+            <View style={{height:'96.5%'}}>
                 <FlatList
                           extraData={this.state.list}
                           numColumns={3}
@@ -93,10 +98,10 @@ class RefreshList extends Component {
                           data={this.state.list}
                           renderItem={this.renderItem}
                     // ListHeaderComponent={this.renderHeader()}
-                        ListFooterComponent={this.renderFooter()}
+                          ListFooterComponent={this.renderFooter()}
                           ListEmptyComponent={this.emptyComponent()}
-                          onEndReachedThreshold={0.8}
-                          // onRefresh={this.onRefresh.bind(this)}
+                          onEndReachedThreshold={0.2}
+                          onRefresh={this.onRefresh.bind(this)}
                           onEndReached={this.onEndReached.bind(this)}
                           initialNumToRender={9}
                           contentContainerStyle={styles}
@@ -107,4 +112,14 @@ class RefreshList extends Component {
         )
     }
 }
+
+var style=StyleSheet.create({
+     moreText:{
+         textAlign:'center',
+         height:pxToDp(40),
+         fontSize:pxToDp(30)
+     }
+})
+
+
 export default RefreshList;
