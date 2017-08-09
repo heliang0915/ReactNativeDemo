@@ -15,38 +15,37 @@ let tabBarMap=[{
     icon:"ios-trophy",
     badgeText:"1",
     index:1,
-    size:pxToDp(24),
+    size:pxToDp(48),
     component:HomeNavigator
 },{
     title:"精选",
     icon:"ios-planet",
     badgeText:"1",
     index:2,
-    size:pxToDp(28),
+    size:pxToDp(56),
     component:ChoiceNavigator
 },{
     title:"排行",
     icon:"ios-ribbon",
     badgeText:"1",
     index:3,
-    size:pxToDp(28),
+    size:pxToDp(56),
     component:RankNavigator
 },{
     title:"分类",
     icon:"ios-pie",
     badgeText:"1",
     index:4,
-    size:pxToDp(24),
+    size:pxToDp(46),
     component:CategoryNavigator
 },{
     title:"我的",
     icon:"ios-person",
     badgeText:"1",
     index:5,
-    size:pxToDp(28),
+    size:pxToDp(60),
     component:Me
 }]
-
 
 export default class TabBar extends Component {
     state = {
@@ -106,7 +105,6 @@ export default class TabBar extends Component {
         )
     }
 
-
     renderTabList(){
         var tabList=[];
         tabBarMap.forEach((item,i)=>{
@@ -130,11 +128,10 @@ const styles = StyleSheet.create({
     container: {
         width:"100%",
         height:'100%',
-        // paddingTop:20,
         backgroundColor: '#FFF',
     },
     tab: {
-        height: pxToDp(50),
+        height: pxToDp(120),
         width:"100%",
         marginTop:5,
         marginBottom:5,
@@ -145,7 +142,7 @@ const styles = StyleSheet.create({
         // marginTop:10
     },
     tabText:{
-        fontSize:pxToDp(12)
+        fontSize:pxToDp(30)
     }
     // ,
     // tabIcon: {

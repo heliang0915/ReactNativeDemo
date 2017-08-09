@@ -3,18 +3,21 @@
  * User: heliang
  * Date: 2017/8/3.
  */
+
 import React, {Component} from 'react';
 import {View, Text, Image, Button, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import TabBar from "../../components/TabBar";
+import RefreshList from '../../components/RefreshList';
+import commonStyle from '../../commonstyle/common';
+import {INDEX_BOOK_API} from '../../api/ApIURL';
 import pxToDp from '../../util/pxToDp'
 
 class Index extends Component {
-   state={
-       list:[{
-           name:"张三"
-       }]
-   }
+    state={
+        list:[{
+            name:"张三"
+        }]
+    }
     // static  navigationOptions = ({navigation, screenProps}) => ({
     //     title: navigation.state.params == null ? "1" : navigation.state.params.title,
     //     headerLeft: (
@@ -67,75 +70,101 @@ class Index extends Component {
     // }
 
     jumpToTest(){
-      let {navigate} = this.props.navigation;
-      navigate("IndexSecond",{
-          id:"123"
-      })
+        let {navigate} = this.props.navigation;
+        navigate("IndexSecond",{
+            id:"123"
+        })
     }
+
     renderList(){
-       let ary=[];
+        let ary=[];
         this.state.list.forEach((item,index)=>{
             ary.push( <Text onPress={this.jumpToTest.bind(this)} key={index}>{item.name}</Text>)
         })
         return ary;
     }
 
-    renderItemList(){
-         let ary=[];
-         for(var i=0;i<10;i++){
-             ary.push(<View  key={i}  style={styles.bookItem}>
-                 <Image style={styles.bookImg} resizeMode={Image.resizeMode.contain} source={require('../../assets/3.jpg')} />
-             </View>);
-         }
-         return ary;
+    renderItem(item){
+
+        // let ary=[];
+        // for(var i=0;i<10;i++){
+        //     ary.push(<View  key={i}  style={styles.bookItem}>
+        //         <Image style={styles.bookImg} resizeMode={Image.resizeMode.contain} source={require('../../assets/3.jpg')} />
+        //     </View>);
+        // }
+        return (
+            <View >
+                <View style={styles.bookItem}>
+                    <Image style={styles.bookImg} resizeMode={Image.resizeMode.contain} source={{uri: item.image}}/>
+                </View>
+                <View style={{width:pxToDp(180)}}>
+                    <Text style={styles.bookItemTxt}>
+                        {item.id}---{item.title}
+                    </Text>
+                </View>
+            </View>);
+
+
+        // return (
+        //     <View style={styles.bookItem}>
+        //         <View>
+        //             <Image style={styles.bookImg} source={{uri: item.image}}/>
+        //         </View>
+        //
+        //         <View>
+        //             <Text>222</Text>
+        //             {/*<Text>{item.title}</Text>*/}
+        //             {/*<Text>{item.noread}</Text>*/}
+        //             {/*<Text>{item.read}</Text>*/}
+        //             {/*<View>*/}
+        //             {/*<Text>{item.updateTime}</Text>*/}
+        //             {/*<Text>{item.updateContent}</Text>*/}
+        //             {/*</View>*/}
+        //         </View>
+        //     </View>
+        // )
     }
 
     render() {
         return (
-            <View style={styles.container}>
-                <View style={styles.containerInner}>
-                    {this.renderItemList()}
-                </View>
+            <View style={commonStyle.container}>
+                {/*<View style={styles.containerInner}>*/}
                 {/*<Icon name="ios-trophy" size={30} color="#900" />*/}
-                {/*<Text>首页</Text>*/}
+                    <RefreshList  styles={styles.containerInner} url={INDEX_BOOK_API}
+                        // listField="books"
+                                 renderItem={this.renderItem}>
+                    </RefreshList>
+                {/*</View>*/}
                 {/*{*/}
-                   {/*this.renderList()*/}
+                {/*this.renderList()*/}
                 {/*}*/}
             </View>
+
         )
     }
 }
 const styles = StyleSheet.create({
-    container: {
-        width: "100%",
-        height: '100%',
-        backgroundColor: '#FFF'
-    },
     containerInner:{
-        marginTop:pxToDp(20),
+        paddingBottom:pxToDp(20),
         marginLeft:pxToDp(35),
         marginRight:pxToDp(35),
-        flexWrap:"wrap",
-        flexDirection:'row',
+        paddingLeft:pxToDp(17),
         justifyContent:'space-between',
-        alignItems:'center'
     },
     bookItem:{
-        marginTop:pxToDp(40),
+        marginTop:pxToDp(20),
         height:pxToDp(241),
         width:pxToDp(185),
-        // backgroundColor:'red',
-        alignItems:'center',
-        justifyContent:'center',
-
+        backgroundColor:'#ccc',
+        marginRight:pxToDp(44)
     },
     bookItemTxt:{
-        color:'#FFF'
+        color:'#000'
     },
+
     bookImg:{
         height:pxToDp(241),
         width:pxToDp(185),
     }
-
 });
 export default Index;

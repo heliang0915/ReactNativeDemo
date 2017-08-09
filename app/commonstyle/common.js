@@ -11,9 +11,10 @@ const commonStyle = StyleSheet.create({
         width: "100%",
         height: '100%',
         backgroundColor: mainBg,
+        flex:1
     },
     f14: {
-        fontSize:pxToDp(14)
+        fontSize:pxToDp(32)
     },
     headerStyle:{
         backgroundColor:mainColor
@@ -21,7 +22,7 @@ const commonStyle = StyleSheet.create({
     headerTitleStyle:{
         alignSelf:'center',
         fontWeight:'100',
-        fontSize:pxToDp(15)
+        fontSize:pxToDp(40)
     }
 });
 
