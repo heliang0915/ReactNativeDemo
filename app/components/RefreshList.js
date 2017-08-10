@@ -5,7 +5,7 @@
  */
 import React,{Component} from 'react';
 import {View,Text,FlatList,StyleSheet} from 'react-native';
-import pxToDp from "../util/pxToDp";
+import {pxToDp} from "../util/pxToDp";
 class RefreshList extends Component {
     state={
         list:[],

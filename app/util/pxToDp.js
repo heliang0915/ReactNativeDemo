@@ -48,4 +48,4 @@ function pxToDp(uiElementPx) {
     return scaleSize(uiElementPx)
 }
 console.log('deviceWidthDp>>>'+pxToDp(20));
-export default pxToDp;
+export  {pxToDp};

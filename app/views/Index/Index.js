@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import RefreshList from '../../components/RefreshList';
 import commonStyle from '../../commonstyle/common';
 import {INDEX_BOOK_API} from '../../api/ApIURL';
-import pxToDp from '../../util/pxToDp'
+import {pxToDp} from '../../util/pxToDp'
 
 // var icons={
 //     "ios-add": 61698,
@@ -969,13 +969,14 @@ class Index extends Component {
     //         </Text>
     //     ),
     //     headerBackTitle:"返回",
-    //     tabBarLabel: "首页",
-    //     tabBarIcon: ({tintColor}) => (
-    //         <Image
-    //             source={require('../../assets/images/item-select.png')}
-    //             style={[styles.icon, {tintColor: tintColor}]}
-    //         />
-    //     )
+    //     tabBarLabel: "首页"
+    //     // ,
+    //     // tabBarIcon: ({tintColor}) => (
+    //     //     {/*<Image*/}
+    //     //         {/*source={require('../../assets/images/item-select.png')}*/}
+    //     //         {/*style={[styles.icon, {tintColor: tintColor}]}*/}
+    //     //     {/*/>*/}
+    //     // )
     // })
     //
     // componentDidMount() {
@@ -988,11 +989,13 @@ class Index extends Component {
     //
     // navigatePress() {
     //     let {navigation}=this.props;
+    //
     //     let {setParams,navigate}=navigation;
+    //     alert(navigate);
     //     // setParams({
     //     //     title:"切换"
     //     // })
-    //     navigate('Test',{
+    //     navigate('IndexSecond',{
     //         title:'哈哈'
     //     });
     // }
@@ -1000,17 +1003,17 @@ class Index extends Component {
     // navigateNext(){
     //     let {navigation}=this.props;
     //     let {navigate}=navigation;
-    //     navigate('List',{
+    //     navigate('IndexSecond',{
     //         title:'列表'
     //     });
     // }
 
-    jumpToTest(){
-        let {navigate} = this.props.navigation;
-        navigate("IndexSecond",{
-            id:"123"
-        })
-    }
+    // jumpToTest(){
+    //     let {navigate} = this.props.navigation;
+    //     navigate("IndexSecond",{
+    //         id:"123"
+    //     })
+    // }
 
     renderList(){
         let ary=[];
@@ -1035,7 +1038,7 @@ class Index extends Component {
                 </View>
                 <View style={{width:pxToDp(180)}}>
                     <Text style={styles.bookItemTxt}>
-                        {item.id}---{item.title}
+                        {item.title}
                     </Text>
                 </View>
             </View>);

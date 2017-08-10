@@ -1,13 +1,14 @@
 /**
- * 首页导航
+ *  首页所有跳转配置
  */
 import React from 'react';
-import {Text,StyleSheet,View,TouchableOpacity} from 'react-native';
+import {Text,StyleSheet,View,TouchableOpacity,TextInput} from 'react-native';
 import {StackNavigator} from 'react-navigation';
 import Index from '../Index/Index';
 import SecondPage from '../Index/SecondPage';
+import Search from '../Index/Search';
 import {AppNavigatorConfig,NavOptions} from './commonConfig';
-import pxToDp from "../../util/pxToDp";
+import {pxToDp,deviceWidth} from "../../util/pxToDp";
 import Icon from 'react-native-vector-icons/Ionicons';
 
 var styles=StyleSheet.create({
@@ -19,7 +20,7 @@ var styles=StyleSheet.create({
     }
 })
 
-let indexOpt=Object.assign({},NavOptions,{
+let indexOpt=({navigation})=>Object.assign({},NavOptions,{
     headerTitle: '',
     headerLeft: (
         <Text style={styles.textCss}>
@@ -27,7 +28,6 @@ let indexOpt=Object.assign({},NavOptions,{
         </Text>
     ),
     headerRight: (
-
         <View style={{flexDirection:'row',marginRight:20}}>
             {/*<Text style={styles.textCss} onPress={()=>{*/}
                 {/*let {navigate}=this.props.navigation;*/}
@@ -35,7 +35,16 @@ let indexOpt=Object.assign({},NavOptions,{
                     {/*title:'列表'*/}
                 {/*});*/}
             {/*}}>*/}
-            <TouchableOpacity onPress={()=>{alert(1)}}>
+            <TouchableOpacity onPress={()=>{
+                let {setParams,navigate}=navigation;
+                // setParams({
+                //      id:"123"
+                // })
+                navigate('Search',{
+                    id:'哈哈'
+                });
+
+            }}>
                 <Icon  name="ios-search-outline" size={pxToDp(58)} color="#FFF" />
             </TouchableOpacity>
             <TouchableOpacity style={{marginLeft:20}} onPress={()=>{alert(2)}}>
@@ -45,21 +54,55 @@ let indexOpt=Object.assign({},NavOptions,{
             {/*</Text>*/}
 
         </View>
-
-
     )
 })
-let secondOpt=Object.assign({},NavOptions,{
-    headerTitle: '测试',
+let searchOpt=({navigation})=>Object.assign({},NavOptions,{
+    headerTitle: '',
     headerRight: (
-            <Text style={{paddingRight:4,color:'#FFF'}} onPress={()=>{
-                let {navigate}=this.props.navigation;
-                navigate('List',{
-                    title:'列表'
-                });
+            <View style={{
+                flexDirection:'row',
+                // justifyContent:'flex-end',
+                width:deviceWidth-70,
+                alignItems:'center',
+                // paddingLeft:pxToDp(100),
+                // marginLeft:pxToDp(1100),
+                // backgroundColor:"blue",
+                marginRight:pxToDp(20)
             }}>
-                下一步
-            </Text>
+                <TextInput
+                    ref="search"
+                    placeholder="请输入..."
+                    multiline={false}
+                    underlineColorAndroid="transparent"
+                    placeholderTextColor="#FFF"
+                    autoFocus={false}
+                    editable={true}
+                    style={{
+                        marginTop:5,
+                        width:'90%',
+                        padding:0,
+                        // height:pxToDp(50),
+                        // margin:0,
+                        // backgroundColor:'yellow',
+                        borderBottomWidth:0.5,
+                        color:'#FFF',
+                        borderBottomColor:'#FFF'
+                    }}
+                />
+                <TouchableOpacity onPress={()=>{
+                    let {setParams,navigate}=navigation;
+                    alert(1);
+                    // setParams({
+                    //      id:"123"
+                    // })
+                    // navigate('Search',{
+                    //     id:'哈哈'
+                    // });
+
+                }}>
+                    <Icon  name="ios-search-outline"  size={pxToDp(58)} color="#FFF" />
+                </TouchableOpacity>
+            </View>
         )
 })
 
@@ -68,15 +111,16 @@ let AppRouteConfigs = {
         screen: Index,
         navigationOptions: indexOpt
     },
-    IndexSecond:{
-        screen: SecondPage,
-        navigationOptions: secondOpt
+    // IndexSecond:{
+    //     screen: SecondPage,
+    //     navigationOptions: secondOpt
+    // },
+    Search:{
+        screen: Search,
+        navigationOptions: searchOpt
     }
 }
 const home = StackNavigator(AppRouteConfigs, AppNavigatorConfig)
-
-
-
 
 
 export default home;

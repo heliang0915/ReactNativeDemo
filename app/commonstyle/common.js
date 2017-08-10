@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {View,Text,Image,StyleSheet} from 'react-native';
-import pxToDp from '../util/pxToDp'
+import {pxToDp} from '../util/pxToDp'
 
 let mainBg="#FFF";
 let mainColor="#fd3653"; //主色调

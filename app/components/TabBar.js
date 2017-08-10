@@ -4,12 +4,12 @@
  * Date: 2017/7/21.
  */
 import React, {Component} from 'react';
-import {Text, StyleSheet,Navigator, View, Image} from 'react-native';
+import {Text, StyleSheet,Navigator, View, Image,BackHandler,ToastAndroid} from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import Me from '../views/Me/Me';
 import {HomeNavigator,ChoiceNavigator,CategoryNavigator,RankNavigator} from '../views/Navigator';
 import Icon from 'react-native-vector-icons/Ionicons';
-import pxToDp from '../util/pxToDp'
+import {pxToDp} from '../util/pxToDp'
 let tabBarMap=[{
     title:"书架",
     icon:"ios-trophy",
@@ -121,6 +121,24 @@ export default class TabBar extends Component {
                 </TabNavigator>
             </View>
         )
+    }
+    componentWillMount(){
+        BackHandler.addEventListener('hardwareBackPress', this._onBackAndroid );
+    }
+
+
+    componentUnWillMount(){
+        BackHandler.addEventListener('hardwareBackPress', this._onBackAndroid);
+    }
+
+    _onBackAndroid=()=>{
+        let now = new Date().getTime();
+        if(now - this.lastBackPressed < 2500) {
+            return false;
+        }
+        this.lastBackPressed = now;
+        ToastAndroid.show('再点击一次退出应用',ToastAndroid.SHORT);
+        return true;
     }
 }
 
