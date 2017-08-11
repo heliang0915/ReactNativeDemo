@@ -37,10 +37,10 @@ const commonStyle = StyleSheet.create({
         fontSize: pxToDp(40)
     },
     readerTitle: {
-        fontSize: 12,
+        fontSize: pxToDp(24),
         color: '#ccc'
     },
-    readerContent: {
+    readerContentText: {
         fontSize: 18,
         color: "#999",
         lineHeight: 34

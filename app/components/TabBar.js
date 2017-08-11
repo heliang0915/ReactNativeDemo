@@ -4,11 +4,15 @@
  * Date: 2017/7/21.
  */
 import React, {Component} from 'react';
-import {Text, StyleSheet,Navigator, View, Image,BackHandler,ToastAndroid} from 'react-native';
+import {Text, StyleSheet, View, Image,BackHandler,ToastAndroid} from 'react-native';
+
 import TabNavigator from 'react-native-tab-navigator';
+import {Navigator} from 'react-native-deprecated-custom-components';
 import Me from '../views/Me/Me';
-import {HomeNavigator,ChoiceNavigator,CategoryNavigator,RankNavigator} from '../views/Navigator';
+import {HomeNavigator,ChoiceNavigator,CategoryNavigator,RankNavigator} from '../views/Navigator/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+
 import {pxToDp} from '../util/pxToDp'
 let tabBarMap=[{
     title:"书架",
@@ -47,9 +51,10 @@ let tabBarMap=[{
     component:Me
 }]
 
-export default class TabBar extends Component {
+class TabBar extends Component {
     state = {
-        selectedIndex: 1
+        selectedIndex: 1,
+        tabBarHeight:pxToDp(120)
     }
     //导航信息
     // static  navigationOptions = ({navigation, screenProps}) => ({
@@ -87,8 +92,18 @@ export default class TabBar extends Component {
     //     )
     // })
 
+    handleTabBar(state){
+        this.setState({
+            tabBarHeight: state ? pxToDp(120) : 0
+        });
+    }
+    componentDidMount(){
+        console.log(this.props);
+    }
+
     renderItem(item,i){
         let {title,icon,selectIcon,badgeText,index,component}=item;
+
         var Component=component;
         return(
             <TabNavigator.Item key={i}
@@ -100,7 +115,7 @@ export default class TabBar extends Component {
                 renderSelectedIcon={() => <Icon name={item.icon} size={item.size} color="red" />}
                 // badgeText={badgeText}
                 onPress={() => this.setState({selectedIndex: index,title})}>
-                <Component/>
+                <Component changeTab={this.handleTabBar} />
             </TabNavigator.Item>
         )
     }
@@ -116,7 +131,17 @@ export default class TabBar extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TabNavigator tabBarStyle={styles.tab}>
+                <TabNavigator  tabBarStyle={{
+                    // height: pxToDp(120),
+                    width:"100%",
+                    marginTop:5,
+                    marginBottom:5,
+                    backgroundColor: '#FFF',
+                    flex:1,
+                    height: this.state.tabBarHeight
+                }}
+                sceneStyle={{paddingBottom: this.state.tabBarHeight}}
+                >
                     {this.renderTabList()}
                 </TabNavigator>
             </View>
@@ -176,3 +201,4 @@ const styles = StyleSheet.create({
     //     color:"red",
     // }
 });
+export default TabBar;

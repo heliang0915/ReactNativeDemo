@@ -6,6 +6,7 @@
 import React,{Component} from 'react';
 import {View,Text,FlatList,StyleSheet} from 'react-native';
 import {pxToDp} from "../util/pxToDp";
+import {get} from '../util/FetchUtil';
 class RefreshList extends Component {
     state={
         list:[],
@@ -32,9 +33,8 @@ class RefreshList extends Component {
         }else{
             page++;
             url+=`?_page=${page}&_limit=${pageSize}`;
-            // alert(url);
         }
-        fetch(url).then((res)=>res.json()).then((json)=>{
+        get(url).then((json)=>{
             let list=[];
             let obj=json;
             if(listField){
@@ -55,6 +55,27 @@ class RefreshList extends Component {
                 refreshing:false
             })
         })
+        // fetch(url).then((res)=>res.json()).then((json)=>{
+        //     let list=[];
+        //     let obj=json;
+        //     if(listField){
+        //         obj= json[listField];
+        //     }
+        //     obj.forEach((item,index)=>{
+        //         let json=item;
+        //         json.key=index+parseInt(this.state.list.length);
+        //         list.push(json);
+        //     })
+        //     if(type!="refresh"){
+        //         list=this.state.list.concat(list);
+        //     }
+        //     console.log(list);
+        //     this.setState({
+        //         list,
+        //         page:page,
+        //         refreshing:false
+        //     })
+        // })
     }
 
     renderItem=({item})=>{
@@ -90,7 +111,7 @@ class RefreshList extends Component {
         let {styles}=this.props;
         // console.log('render>>>');
         return(
-            <View style={{height:'96.5%'}}>
+            <View style={{height:'100%'}}>
                 <FlatList
                           extraData={this.state.list}
                           numColumns={3}

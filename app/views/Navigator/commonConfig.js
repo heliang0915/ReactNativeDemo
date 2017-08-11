@@ -1,10 +1,10 @@
 /**
- * Created by heliang on 2017/8/6.
+ *
  */
-import {StyleSheet} from 'react-native';
 // 先引入这个方法
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStackStyleInterpolator';
 import commonStyle from '../../commonstyle/common';
+import BookReader from '../../views/Book/BookReader';
 
 let AppNavigatorConfig = {
     mode: "card",
@@ -44,4 +44,15 @@ let NavOptions=Object.assign({},{
     }
 })
 
-export  {AppNavigatorConfig,NavOptions};
+
+let bookOpt=({navigation})=>Object.assign({},NavOptions,{
+    header:null
+})
+
+let BooksReader={
+    screen: BookReader,
+    navigationOptions: bookOpt
+}
+
+
+export  {AppNavigatorConfig,NavOptions,BooksReader};

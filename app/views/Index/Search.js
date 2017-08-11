@@ -14,11 +14,7 @@ class Search extends Component{
     render(){
         return (
             <View>
-                <Text>
-                    搜索
-                </Text>
-                <IReader>
-                </IReader>
+                <IReader></IReader>
             </View>
         )
     }

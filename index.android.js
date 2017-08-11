@@ -9,6 +9,6 @@ import {
     AppRegistry
 } from 'react-native';
 
-import App from './app/components/TabBar'
+import App from './app/components/IReader'
 // ./gradlew assembleRelease
 AppRegistry.registerComponent('ReactNatDemo', ()=>App);

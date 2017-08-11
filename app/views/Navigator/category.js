@@ -15,7 +15,7 @@ let secondOpt=Object.assign({},NavOptions,{
 })
 
 let AppRouteConfigs = {
-    Home: {
+    CategoryHome: {
         screen: Category,
         navigationOptions: categoryOpt
     },

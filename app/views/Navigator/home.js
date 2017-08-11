@@ -5,9 +5,8 @@ import React from 'react';
 import {Text,StyleSheet,View,TouchableOpacity,TextInput} from 'react-native';
 import {StackNavigator} from 'react-navigation';
 import Index from '../Index/Index';
-import SecondPage from '../Index/SecondPage';
 import Search from '../Index/Search';
-import {AppNavigatorConfig,NavOptions} from './commonConfig';
+import {AppNavigatorConfig,NavOptions,BooksReader} from './commonConfig';
 import {pxToDp,deviceWidth} from "../../util/pxToDp";
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -20,6 +19,7 @@ var styles=StyleSheet.create({
     }
 })
 
+//首页
 let indexOpt=({navigation})=>Object.assign({},NavOptions,{
     headerTitle: '',
     headerLeft: (
@@ -56,17 +56,15 @@ let indexOpt=({navigation})=>Object.assign({},NavOptions,{
         </View>
     )
 })
+
+//首页搜索页面
 let searchOpt=({navigation})=>Object.assign({},NavOptions,{
     headerTitle: '',
     headerRight: (
             <View style={{
                 flexDirection:'row',
-                // justifyContent:'flex-end',
                 width:deviceWidth-70,
                 alignItems:'center',
-                // paddingLeft:pxToDp(100),
-                // marginLeft:pxToDp(1100),
-                // backgroundColor:"blue",
                 marginRight:pxToDp(20)
             }}>
                 <TextInput
@@ -81,9 +79,6 @@ let searchOpt=({navigation})=>Object.assign({},NavOptions,{
                         marginTop:5,
                         width:'90%',
                         padding:0,
-                        // height:pxToDp(50),
-                        // margin:0,
-                        // backgroundColor:'yellow',
                         borderBottomWidth:0.5,
                         color:'#FFF',
                         borderBottomColor:'#FFF'
@@ -106,22 +101,20 @@ let searchOpt=({navigation})=>Object.assign({},NavOptions,{
         )
 })
 
+
+
+
 let AppRouteConfigs = {
     Home: {
         screen: Index,
         navigationOptions: indexOpt
     },
-    // IndexSecond:{
-    //     screen: SecondPage,
-    //     navigationOptions: secondOpt
-    // },
     Search:{
         screen: Search,
         navigationOptions: searchOpt
-    }
+    },
+    BooksReader
 }
-const home = StackNavigator(AppRouteConfigs, AppNavigatorConfig)
-
-
-export default home;
+const nav = StackNavigator(AppRouteConfigs, AppNavigatorConfig)
+export default nav;
 

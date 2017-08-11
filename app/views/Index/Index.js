@@ -12,6 +12,8 @@ import commonStyle from '../../commonstyle/common';
 import {INDEX_BOOK_API} from '../../api/ApIURL';
 import {pxToDp} from '../../util/pxToDp'
 
+
+let _this=null;
 // var icons={
 //     "ios-add": 61698,
 //     "ios-add-circle": 61697,
@@ -949,11 +951,20 @@ import {pxToDp} from '../../util/pxToDp'
 //     "md-woman": 62378
 // }
 class Index extends Component {
-    state={
-        list:[{
-            name:"张三"
-        }]
+
+    constructor(props){
+        super(props);
+        _this=this;
+        this.state={
+            list:[{
+                name:"张三"
+            }]
+        }
     }
+    componentDidMount(){
+        console.log(this.props);
+    }
+
     // static  navigationOptions = ({navigation, screenProps}) => ({
     //     title: navigation.state.params == null ? "1" : navigation.state.params.title,
     //     headerLeft: (
@@ -1015,32 +1026,35 @@ class Index extends Component {
     //     })
     // }
 
-    renderList(){
-        let ary=[];
-        this.state.list.forEach((item,index)=>{
-            ary.push( <Text onPress={this.jumpToTest.bind(this)} key={index}>{item.name}</Text>)
-        })
-        return ary;
-    }
+    // renderList(){
+    //     let ary=[];
+    //     this.state.list.forEach((item,index)=>{
+    //         ary.push( <Text onPress={this.jumpToTest.bind(this)} key={index}>{item.name}</Text>)
+    //     })
+    //     return ary;
+    // }
+
 
     renderItem(item){
-
         // let ary=[];
         // for(var i=0;i<10;i++){
         //     ary.push(<View  key={i}  style={styles.bookItem}>
         //         <Image style={styles.bookImg} resizeMode={Image.resizeMode.contain} source={require('../../assets/3.jpg')} />
         //     </View>);
         // }
+        // console.log(_this);
         return (
-            <View >
-                <View style={styles.bookItem}>
-                    <Image style={styles.bookImg} resizeMode={Image.resizeMode.contain} source={{uri: item.image}}/>
-                </View>
-                <View style={{width:pxToDp(180)}}>
-                    <Text style={styles.bookItemTxt}>
-                        {item.title}
-                    </Text>
-                </View>
+            <View>
+                <TouchableOpacity onPress={_this.gotoReader}>
+                    <View style={styles.bookItem}>
+                        <Image style={styles.bookImg} resizeMode={Image.resizeMode.contain} source={{uri: item.image}}/>
+                    </View>
+                    <View style={{width:pxToDp(180)}}>
+                        <Text style={styles.bookItemTxt}>
+                            {item.title}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
             </View>);
 
 
@@ -1064,6 +1078,13 @@ class Index extends Component {
         // )
     }
 
+    gotoReader(){
+       let {navigation,changeTab}= _this.props;
+       console.log(_this.props);
+       let {navigate}=navigation;
+
+       navigate("BooksReader",{bookId:''})
+    }
 
     renderICON(){
         // var ary=[];
