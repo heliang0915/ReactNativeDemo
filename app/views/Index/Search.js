@@ -5,6 +5,7 @@
  */
 import React, {Component} from 'react';
 import  {View,Text} from 'react-native';
+import IReader from '../../components/IReader'
 
 class Search extends Component{
     // componentDidMount(){
@@ -16,6 +17,8 @@ class Search extends Component{
                 <Text>
                     搜索
                 </Text>
+                <IReader>
+                </IReader>
             </View>
         )
     }
