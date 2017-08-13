@@ -38,13 +38,12 @@ const commonStyle = StyleSheet.create({
     },
     readerTitle: {
         fontSize: pxToDp(24),
-        color: '#ccc'
+        color: '#999'
     },
     readerContentText: {
-        fontSize: 18,
+        fontSize: pxToDp(18),
         color: "#999",
-        lineHeight: 34
+        lineHeight: pxToDp(34)
     }
 });
-
 export default commonStyle;
