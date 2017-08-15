@@ -17,8 +17,8 @@ import {
     PixelRatio,
 } from 'react-native';
 
-export const deviceWidth = Dimensions.get('window').width;      //设备的宽度
-export const deviceHeight = Dimensions.get('window').height;    //设备的高度
+const deviceWidth = Dimensions.get('window').width;      //设备的宽度
+const deviceHeight = Dimensions.get('window').height;    //设备的高度
 let fontScale = PixelRatio.getFontScale();                      //返回字体大小缩放比例
 
 let pixelRatio = PixelRatio.get();      //当前设备的像素密度
@@ -46,4 +46,5 @@ function scaleSize(size: number) {
 function pxToDp(uiElementPx) {
     return scaleSize(uiElementPx)
 }
-export  {pxToDp};
+
+export {pxToDp, deviceWidth, deviceHeight};
