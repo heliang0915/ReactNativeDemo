@@ -9,6 +9,7 @@ import {
     AppRegistry
 } from 'react-native';
 
-import App from './app/components/IReader'
+import MyWebView from './app/Web'
 // ./gradlew assembleRelease
-AppRegistry.registerComponent('ReactNatDemo', ()=>App);
+
+AppRegistry.registerComponent('ReactNatDemo', ()=>MyWebView);

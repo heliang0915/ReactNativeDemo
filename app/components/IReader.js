@@ -10,7 +10,7 @@ import {_formatChapter, _contentFormat} from '../util/FromateUtil';
 import commonStyle from '../commonstyle/common';
 import {get} from '../util/FetchUtil';
 import Toash from '../util/ToashUtil'
-import {BOOK_INFO_URL, BOOK_CHAPTERS_URL, BOOK_CHAPTERS_CONTENT_URL} from '../api/ApIURL';
+import {BOOK_CHAPTERS_URL, BOOK_CHAPTERS_CONTENT_URL} from '../api/ApIURL';
 
 class IReader extends Component {
     constructor(props) {
@@ -20,153 +20,63 @@ class IReader extends Component {
         this.chapterPageSize = 0;// 每个章节最终分为几页
         this.currentChapter = 0;
     }
-
     state = {
         characterContents: [],
         loading: false,
         chapterLinks: []
     }
-
-
     //获取书的所有章节
-    getAllCharacter(cb) {
+    getAllCharacter() {
         let BOOKCHAPTERSURL = BOOK_CHAPTERS_URL(this.bookId);
         get(BOOKCHAPTERSURL).then(({mixToc}) => {
             let {chapters} = mixToc;
             this.setState({
                 chapterLinks: chapters
             }, () => {
-                let counter = 0;
-                let list = [];
-                chapters.forEach((item, num) => {
-                    let reg = /第(\d+)章/;
-                    let inx = 0;
-                    let chapters = this.state.chapterLinks;
-                    let {link, title} = item;
-                    let BOOKCHAPTERSCONTENTURL = BOOK_CHAPTERS_CONTENT_URL(link);
-                    get(BOOKCHAPTERSCONTENTURL).then(({chapter}) => {
-                        title.replace(reg, function () {
-                            inx = RegExp.$1;
-                        })
-                        let {body} = chapter;
-                        var ary = _formatChapter(body);
-                        this.chapterPageSize = this.state.characterContents.concat(ary).length;
-                        ary.forEach((chunk, index) => {
-                            list.push({
-                                key: parseInt(num) * 1000 + parseInt(index),
-                                characterName: title,
-                                characterContent: [chunk],
-                                group:num
-                            });
-                        })
-                        counter++;
-                        if(counter==chapters.length) {
-                            list.sort((a, b) => {
-                                return a.key - b.key;
-                            })
-                            console.log(chapters.length);
-                            cb(list);
-                        }
-                    })
-                })
+                this.getCharacter(4);
             })
         })
     }
 
-    // loadData(num) {
-    //     if (num == undefined) {
-    //         this.setState({
-    //             loading: true
-    //         });
-    //         num = 0;
-    //     }
-    //
-    //
-    //     this.getCharacter(this.bookId, num);
-    //     // setTimeout(()=>{
-    //     //     num++
-    //     //     console.log(num);
-    //     //     console.log(this.state.chapterLinks.length);
-    //     //     if(num<this.state.chapterLinks.length){
-    //     //         this.loadData(num)
-    //     //     }else{
-    //     //         this.setState({
-    //     //             loading:false
-    //     //         });
-    //     //     }
-    //     // },2000)
-    // }
-
-    //获取指定章节的内容
-    getOneCharacter(num){
-        let oneCharacterList=[];
-        this.allCharacter.forEach((item)=>{
-            if(item.group==num){
-                oneCharacterList.push(item);
-            }
-        })
-        return oneCharacterList;
-    }
-
     //获取指定书籍的指定章节
-    getCharacter(bookId, num) {
-        console.log(this.getOneCharacter[num]);
-        // let counter=0;
-        // let list = [];
-        // let reg = /第(\d+)章/;
-        // let inx = 0;
-        // let counter = 0;
-        // console.log("num.."+num);
-        //
-        // // 获取所有章节
-        // // console.time('耗时')
-        // this.currentChapter = num;
-        // // let BOOKCHAPTERSURL = BOOK_CHAPTERS_URL(bookId);
-        // // get(BOOKCHAPTERSURL).then(({mixToc}) => {
-        // let chapters = this.state.chapterLinks;
-        // // chapters.forEach((con)=>{
-        // let {link, title} = chapters[num];
-        // // console.log("num>>>" + num);
-        // // console.log("link>>>" + link)
-        // let BOOKCHAPTERSCONTENTURL = BOOK_CHAPTERS_CONTENT_URL(link);
-        // get(BOOKCHAPTERSCONTENTURL).then(({chapter}) => {
-        //     title.replace(reg, function () {
-        //         inx = RegExp.$1;
-        //     })
-        //     let {body} = chapter;
-        //     var ary = _formatChapter(body);
-        //     this.chapterPageSize = this.state.characterContents.concat(ary).length;
-        //     ary.forEach((chunk, index) => {
-        //         list.push({
-        //             key: parseInt(num) * 1000 + parseInt(index),
-        //             characterName: title,
-        //             characterContent: [chunk]
-        //         });
-        //     })
-        //     // counter++;
-        //     // if(counter==chapters.length){
-        //     list = this.state.characterContents.concat(list);
-        //     list.sort((a, b) => {
-        //         return a.key - b.key;
-        //     })
-        //
-        //     // cb(list);
-        //
-        //     this.setState({
-        //         characterContents: list,
-        //         loading: false
-        //     })
-        //     // }
-        //
-        //
-        //     // })
-        //     // })
-        //
-        // })
+    getCharacter(num) {
+        let list = [];
+        let reg = /第(\d+)章/;
+        let inx = 0;
+        this.currentChapter = num;
+        let chapters = this.state.chapterLinks;
+        let {link, title} = chapters[num];
+        let BOOKCHAPTERSCONTENTURL = BOOK_CHAPTERS_CONTENT_URL(link);
+        this.setState({
+            loading: true
+        })
+        get(BOOKCHAPTERSCONTENTURL).then(({chapter}) => {
+            title.replace(reg, function () {
+                inx = RegExp.$1;
+            })
+            let {body} = chapter;
+            var ary = _formatChapter(body);
+            this.chapterPageSize = this.state.characterContents.concat(ary).length;
+            ary.forEach((chunk, index) => {
+                list.push({
+                    key: parseInt(num) * 1000 + parseInt(index),
+                    characterName: title,
+                    characterContent: [chunk]
+                });
+            })
+            list = this.state.characterContents.concat(list);
+            list.sort((a, b) => {
+                return a.key - b.key;
+            })
+            this.setState({
+                characterContents: list,
+                loading: false
+            })
+        })
     }
 
     componentDidMount() {
-        this.loadAllData();
+        this.getAllCharacter();
     }
 
     loadAllData(){
@@ -181,14 +91,12 @@ class IReader extends Component {
             })
         });
     }
-
     emptyComponent() {
         return
         <View style={{height: '120%', backgroundColor: "#999"}}>
             <Text>没有数据</Text>
         </View>
     }
-
     renderList(characterContent) {
         let ary = [];
         characterContent[0].forEach((content, index) => {
@@ -223,25 +131,26 @@ class IReader extends Component {
 
     _scrollEnd(env) {
         let {x} = env.nativeEvent.contentOffset;
-        // let maxWidth=(this.chapterPageSize-1)*deviceWidth-300;
-        // //加载下一个章节信息
-        // if(x>maxWidth){
-        //     console.log("加载下一章节");
-        //     this.currentChapter+=1;
-        //     this.getCharacter(this.bookId,this.currentChapter);
-        // }
-        // console.log(x);
-        if (x == 0) {
+        let maxWidth=(this.chapterPageSize-1)*deviceWidth-300;
+        //加载下一个章节信息
+        if(x>maxWidth){
+            console.log("加载下一章节");
+            this.currentChapter+=1;
+            this.getCharacter(this.currentChapter);
+        }
+        console.log(x);
+        if (x == 0&&this.currentChapter==0) {
             // ToastAndroid.show('已经是第一页',ToastAndroid.SHORT)
             Toash.toastShort('已经是第一页');
         }
+
+        //向前翻页 加载章节
+        if(x == 0&&this.currentChapter!=0){
+            console.log("加载上一章节");
+            this.currentChapter-=1;
+            this.getCharacter(this.currentChapter);
+        }
     }
-
-    //获取章节信息
-    // getChapterData(){
-    //
-    // }
-
 
     renderLoading() {
         return (
@@ -249,7 +158,7 @@ class IReader extends Component {
                 <View style={readerStyle.loadingInnerView}>
                     <Image style={{height: 40, width: 40, marginTop: 10, marginBottom: 10}}
                            source={require('../assets/loadding.gif')}/>
-                    <Text style={readerStyle.loadingTxt}>加载中...</Text>
+                    <Text style={readerStyle.loadingTxt}>奋力加载中...</Text>
                 </View>
             </View>
         )
@@ -259,35 +168,41 @@ class IReader extends Component {
         console.log('render....');
         // alert(this.state.loading==true);
         return (
-            <Image source={require('../assets/read_bg.jpg')} style={readerStyle.readerBg}>
-                {
-                    (this.state.loading == true) ? this.renderLoading() : null
-                }
+            <View>
                 <StatusBar
-                    backgroundColor="red"
-                    barStyle="light-content"
-                />
-                <ScrollView
-                    horizontal={true}
-                    pagingEnabled={true}
-                    showsHorizontalScrollIndicator={true}
-                    scrollEventThrottle={800}
-                    onMomentumScrollEnd={this._scrollEnd.bind(this)}
-                >
-                    <FlatList
-                        extraData={this.state.characterContents}
-                        numColumns={1}
+                    hidden={true}
+                    translucent={true}
+                    showHideTransition={'slide'}
+                    barStyle={'light-content'}/>
+
+                <Image source={require('../assets/read_bg.jpg')} style={readerStyle.readerBg}>
+                    {
+                        (this.state.loading == true) ? this.renderLoading() : null
+                    }
+
+                    <ScrollView
                         horizontal={true}
-                        data={this.state.characterContents}
-                        renderItem={this.renderItem}
-                        // ListHeaderComponent={this.renderHeader()}
-                        // ListFooterComponent={this.renderFooter()}
-                        ListEmptyComponent={this.emptyComponent()}
-                        initialNumToRender={9}
-                        // contentContainerStyle={readerStyle.readerContent}
-                    />
-                </ScrollView>
-            </Image>
+                        pagingEnabled={true}
+                        showsHorizontalScrollIndicator={true}
+                        scrollEventThrottle={800}
+                        onMomentumScrollEnd={this._scrollEnd.bind(this)}
+                    >
+                        <FlatList
+                            extraData={this.state.characterContents}
+                            numColumns={1}
+                            horizontal={true}
+                            data={this.state.characterContents}
+                            renderItem={this.renderItem}
+                            // ListHeaderComponent={this.renderHeader()}
+                            // ListFooterComponent={this.renderFooter()}
+                            ListEmptyComponent={this.emptyComponent()}
+                            initialNumToRender={9}
+                            // contentContainerStyle={readerStyle.readerContent}
+                        />
+                    </ScrollView>
+                </Image>
+            </View>
+
         )
     }
 }
