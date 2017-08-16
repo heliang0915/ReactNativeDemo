@@ -16,6 +16,7 @@ class IReader extends Component {
     constructor(props) {
         super(props);
         this.bookId = '58809e839a05e10e3625f046';
+        this.allCharacter=[];
         this.chapterPageSize = 0;// 每个章节最终分为几页
         this.currentChapter = 0;
     }
@@ -24,109 +25,161 @@ class IReader extends Component {
         characterContents: [],
         loading: false,
         chapterLinks: []
-
     }
 
 
     //获取书的所有章节
-    getAllCharacter() {
+    getAllCharacter(cb) {
         let BOOKCHAPTERSURL = BOOK_CHAPTERS_URL(this.bookId);
         get(BOOKCHAPTERSURL).then(({mixToc}) => {
             let {chapters} = mixToc;
             this.setState({
                 chapterLinks: chapters
             }, () => {
-                // this.getCharacter(this.bookId, 0);
-                // this.loadData();
-                chapters.forEach((item,index)=>{
-                    this.loadData(index);
+                let counter = 0;
+                let list = [];
+                chapters.forEach((item, num) => {
+                    let reg = /第(\d+)章/;
+                    let inx = 0;
+                    let chapters = this.state.chapterLinks;
+                    let {link, title} = item;
+                    let BOOKCHAPTERSCONTENTURL = BOOK_CHAPTERS_CONTENT_URL(link);
+                    get(BOOKCHAPTERSCONTENTURL).then(({chapter}) => {
+                        title.replace(reg, function () {
+                            inx = RegExp.$1;
+                        })
+                        let {body} = chapter;
+                        var ary = _formatChapter(body);
+                        this.chapterPageSize = this.state.characterContents.concat(ary).length;
+                        ary.forEach((chunk, index) => {
+                            list.push({
+                                key: parseInt(num) * 1000 + parseInt(index),
+                                characterName: title,
+                                characterContent: [chunk],
+                                group:num
+                            });
+                        })
+                        counter++;
+                        if(counter==chapters.length) {
+                            list.sort((a, b) => {
+                                return a.key - b.key;
+                            })
+                            console.log(chapters.length);
+                            cb(list);
+                        }
+                    })
                 })
-
             })
         })
     }
 
-    loadData(num) {
-        if (num == undefined) {
-            this.setState({
-                loading: true
-            });
-            num = 0;
-        }
-        this.getCharacter(this.bookId, num);
-        // setTimeout(()=>{
-        //     num++
-        //     console.log(num);
-        //     console.log(this.state.chapterLinks.length);
-        //     if(num<this.state.chapterLinks.length){
-        //         this.loadData(num)
-        //     }else{
-        //         this.setState({
-        //             loading:false
-        //         });
-        //     }
-        // },2000)
-    }
+    // loadData(num) {
+    //     if (num == undefined) {
+    //         this.setState({
+    //             loading: true
+    //         });
+    //         num = 0;
+    //     }
+    //
+    //
+    //     this.getCharacter(this.bookId, num);
+    //     // setTimeout(()=>{
+    //     //     num++
+    //     //     console.log(num);
+    //     //     console.log(this.state.chapterLinks.length);
+    //     //     if(num<this.state.chapterLinks.length){
+    //     //         this.loadData(num)
+    //     //     }else{
+    //     //         this.setState({
+    //     //             loading:false
+    //     //         });
+    //     //     }
+    //     // },2000)
+    // }
 
+    //获取指定章节的内容
+    getOneCharacter(num){
+        let oneCharacterList=[];
+        this.allCharacter.forEach((item)=>{
+            if(item.group==num){
+                oneCharacterList.push(item);
+            }
+        })
+        return oneCharacterList;
+    }
 
     //获取指定书籍的指定章节
     getCharacter(bookId, num) {
+        console.log(this.getOneCharacter[num]);
         // let counter=0;
-        let list = [];
-        let reg = /第(\d+)章/;
-        let inx = 0;
-        let counter = 0;
-
-        // 获取所有章节
-        // console.time('耗时')
-        this.currentChapter = num;
-        // let BOOKCHAPTERSURL = BOOK_CHAPTERS_URL(bookId);
-        // get(BOOKCHAPTERSURL).then(({mixToc}) => {
-        let chapters = this.state.chapterLinks;
-        // chapters.forEach((con)=>{
-        let {link, title} = chapters[num];
-        console.log("num>>>" + num);
-        console.log("link>>>" + link)
-        let BOOKCHAPTERSCONTENTURL = BOOK_CHAPTERS_CONTENT_URL(link);
-        get(BOOKCHAPTERSCONTENTURL).then(({chapter}) => {
-            title.replace(reg, function () {
-                inx = RegExp.$1;
-            })
-            let {body} = chapter;
-            var ary = _formatChapter(body);
-            this.chapterPageSize = this.state.characterContents.concat(ary).length;
-            ary.forEach((chunk, index) => {
-                list.push({
-                    key: parseInt(num) * 1000 + parseInt(index),
-                    characterName: title,
-                    characterContent: [chunk]
-                });
-            })
-            // counter++;
-            // if(counter==chapters.length){
-            list = this.state.characterContents.concat(list);
-            list.sort((a, b) => {
-                return a.key - b.key;
-            })
-
-            // cb(list);
-
-            this.setState({
-                characterContents:list,
-                loading:false
-            })
-            // }
-
-
-            // })
-            // })
-
-        })
+        // let list = [];
+        // let reg = /第(\d+)章/;
+        // let inx = 0;
+        // let counter = 0;
+        // console.log("num.."+num);
+        //
+        // // 获取所有章节
+        // // console.time('耗时')
+        // this.currentChapter = num;
+        // // let BOOKCHAPTERSURL = BOOK_CHAPTERS_URL(bookId);
+        // // get(BOOKCHAPTERSURL).then(({mixToc}) => {
+        // let chapters = this.state.chapterLinks;
+        // // chapters.forEach((con)=>{
+        // let {link, title} = chapters[num];
+        // // console.log("num>>>" + num);
+        // // console.log("link>>>" + link)
+        // let BOOKCHAPTERSCONTENTURL = BOOK_CHAPTERS_CONTENT_URL(link);
+        // get(BOOKCHAPTERSCONTENTURL).then(({chapter}) => {
+        //     title.replace(reg, function () {
+        //         inx = RegExp.$1;
+        //     })
+        //     let {body} = chapter;
+        //     var ary = _formatChapter(body);
+        //     this.chapterPageSize = this.state.characterContents.concat(ary).length;
+        //     ary.forEach((chunk, index) => {
+        //         list.push({
+        //             key: parseInt(num) * 1000 + parseInt(index),
+        //             characterName: title,
+        //             characterContent: [chunk]
+        //         });
+        //     })
+        //     // counter++;
+        //     // if(counter==chapters.length){
+        //     list = this.state.characterContents.concat(list);
+        //     list.sort((a, b) => {
+        //         return a.key - b.key;
+        //     })
+        //
+        //     // cb(list);
+        //
+        //     this.setState({
+        //         characterContents: list,
+        //         loading: false
+        //     })
+        //     // }
+        //
+        //
+        //     // })
+        //     // })
+        //
+        // })
     }
 
     componentDidMount() {
-        // this.getCharacter(this.bookId, 0);
-        this.getAllCharacter();
+        this.loadAllData();
+    }
+
+    loadAllData(){
+        this.setState({
+            loading: true
+        });
+        this.getAllCharacter((list)=>{
+            this.allCharacter=list;
+            this.setState({
+                characterContents:list,
+                loading: false
+            })
+        });
     }
 
     emptyComponent() {
@@ -173,7 +226,7 @@ class IReader extends Component {
         // let maxWidth=(this.chapterPageSize-1)*deviceWidth-300;
         // //加载下一个章节信息
         // if(x>maxWidth){
-        //     // alert("加载下一章节");
+        //     console.log("加载下一章节");
         //     this.currentChapter+=1;
         //     this.getCharacter(this.bookId,this.currentChapter);
         // }
@@ -183,7 +236,6 @@ class IReader extends Component {
             Toash.toastShort('已经是第一页');
         }
     }
-
 
     //获取章节信息
     // getChapterData(){
@@ -207,14 +259,13 @@ class IReader extends Component {
         console.log('render....');
         // alert(this.state.loading==true);
         return (
-
             <Image source={require('../assets/read_bg.jpg')} style={readerStyle.readerBg}>
                 {
                     (this.state.loading == true) ? this.renderLoading() : null
                 }
                 <StatusBar
-                backgroundColor="blue"
-                barStyle="light-content"
+                    backgroundColor="red"
+                    barStyle="light-content"
                 />
                 <ScrollView
                     horizontal={true}
