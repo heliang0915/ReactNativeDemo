@@ -9,6 +9,7 @@
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
     "mockjs": "^1.0.1-beta3",
+    "node-pre-gyp": "^0.6.36",
     "react": "16.0.0-alpha.12",
     "react-native": "0.47.1",
     "react-native-deprecated-custom-components": "^0.1.1",
