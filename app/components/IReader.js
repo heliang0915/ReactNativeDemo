@@ -19,6 +19,8 @@ class IReader extends Component {
         this.allCharacter=[];
         this.chapterPageSize = 0;// 每个章节最终分为几页
         this.currentChapter = 0;
+        this.chapterMap={};
+        this.currentChapterPageSize=0;
     }
     state = {
         characterContents: [],
@@ -37,9 +39,8 @@ class IReader extends Component {
             })
         })
     }
-
     //获取指定书籍的指定章节
-    getCharacter(num) {
+    getCharacter(num,cb) {
         let list = [];
         let reg = /第(\d+)章/;
         let inx = 0;
@@ -56,7 +57,9 @@ class IReader extends Component {
             })
             let {body} = chapter;
             var ary = _formatChapter(body);
+            console.log("num>>>>"+num);
             this.chapterPageSize = this.state.characterContents.concat(ary).length;
+            this.currentChapterPageSize = ary.length;
             ary.forEach((chunk, index) => {
                 list.push({
                     key: parseInt(num) * 1000 + parseInt(index),
@@ -64,6 +67,7 @@ class IReader extends Component {
                     characterContent: [chunk]
                 });
             })
+            this.chapterMap[inx-1]=inx-1;
             list = this.state.characterContents.concat(list);
             list.sort((a, b) => {
                 return a.key - b.key;
@@ -71,6 +75,10 @@ class IReader extends Component {
             this.setState({
                 characterContents: list,
                 loading: false
+            },()=>{
+                console.log('call callback');
+                cb!=undefined?cb():null;
+
             })
         })
     }
@@ -79,18 +87,6 @@ class IReader extends Component {
         this.getAllCharacter();
     }
 
-    loadAllData(){
-        this.setState({
-            loading: true
-        });
-        this.getAllCharacter((list)=>{
-            this.allCharacter=list;
-            this.setState({
-                characterContents:list,
-                loading: false
-            })
-        });
-    }
     emptyComponent() {
         return
         <View style={{height: '120%', backgroundColor: "#999"}}>
@@ -135,20 +131,32 @@ class IReader extends Component {
         //加载下一个章节信息
         if(x>maxWidth){
             console.log("加载下一章节");
-            this.currentChapter+=1;
-            this.getCharacter(this.currentChapter);
+            let next=parseInt(Object.keys(this.chapterMap)[Object.keys(this.chapterMap).length-1])+1;
+            this.getCharacter(next);
         }
         console.log(x);
         if (x == 0&&this.currentChapter==0) {
-            // ToastAndroid.show('已经是第一页',ToastAndroid.SHORT)
             Toash.toastShort('已经是第一页');
         }
-
         //向前翻页 加载章节
         if(x == 0&&this.currentChapter!=0){
             console.log("加载上一章节");
-            this.currentChapter-=1;
-            this.getCharacter(this.currentChapter);
+            console.log(this.chapterMap);
+            let scrollView=this.refs.sv;
+            let pre=parseInt(Object.keys(this.chapterMap)[0])-1;
+            console.log(this.chapterMap);
+            this.getCharacter(pre,()=>{
+                // console.log(Object.keys(this.chapterMap).length);
+                let page=Object.keys(this.chapterMap).length==2?this.currentChapterPageSize-1:this.currentChapterPageSize;
+                let myX= (page)*deviceWidth;
+                // setTimeout(()=>{
+                    scrollView.scrollTo({
+                        x:myX,
+                        y:0,
+                        animated:false
+                    })
+                // },100)
+            });
         }
     }
 
@@ -165,8 +173,7 @@ class IReader extends Component {
     }
 
     render() {
-        console.log('render....');
-        // alert(this.state.loading==true);
+        console.log('render...');
         return (
             <View>
                 <StatusBar
@@ -181,9 +188,11 @@ class IReader extends Component {
                     }
 
                     <ScrollView
+                        ref="sv"
                         horizontal={true}
                         pagingEnabled={true}
-                        showsHorizontalScrollIndicator={true}
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
                         scrollEventThrottle={800}
                         onMomentumScrollEnd={this._scrollEnd.bind(this)}
                     >
@@ -215,12 +224,7 @@ const readerStyle = StyleSheet.create({
     readerContent: {
         width: deviceWidth,
         height: deviceHeight,
-        flex: 1,
-        // flexDirection:"row",
-        // justifyContent: 'center',
-        // backgroundColor:'red'
-        // alignItems: ''
-
+        flex: 1
     },
     loadingView: {
         justifyContent: 'center',
@@ -243,7 +247,6 @@ const readerStyle = StyleSheet.create({
         borderWidth: 5,
         height: 50,
         width: 50,
-        // borderRadius:50,
         backgroundColor: "#000",
         borderColor: '#FFF',
         borderStyle: 'solid'
@@ -255,16 +258,8 @@ const readerStyle = StyleSheet.create({
         paddingLeft: 10
     },
     readerContentInner: {
-        // flex: 1,
-        // marginRight:20,
-        // height:deviceHeight-300,
         paddingLeft: pxToDp(30),
-        // backgroundColor:'blue',
         paddingRight: pxToDp(30)
-        // ,
-        // marginTop:-100
-        // ,
-        // backgroundColor:'blue'
     }
 });
 
