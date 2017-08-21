@@ -57,28 +57,31 @@ class IReader extends Component {
         }
         this.getCharacter(num, () => {
             this.getCharacter(next, () => {
+                this.getCharacter(pre, () => {
+
+                })
             })
         });
     }
     //获取书的所有章节
     getAllCharacter() {
         let BOOKCHAPTERSURL = BOOK_CHAPTERS_URL(this.bookId);
-        this.setState({
-            loading: true
-        })
         StorageUtil.setSync('chapterLinks', BOOKCHAPTERSURL, {}, 'chapter')
         StorageUtil.get('chapterLinks', ({mixToc}) => {
             let {chapters} = mixToc;
             this.chapterLinks=chapters;
             StorageUtil.save('chapterLinks' , {mixToc:{chapters}});
             let history=RealmUtil.query("HistoryChapter");
-            let {id}=history[0];
-            this.loadTwoPageData(id!=undefined&&id>1?(id-2):0);
+            if(history&&Object.keys(history).length){
+                let {id}=history[0];
+                this.loadTwoPageData(id!=undefined&&id>1?(id-2):0);
+            }else{
+                this.loadTwoPageData(0);
+            }
         });
     }
-
-
     getCharacterInner(chapters,chapter,num,cb){
+
         let list = [];
         let inx = 0;
         let reg = /第(\d+)章/;
@@ -102,17 +105,22 @@ class IReader extends Component {
         list.sort((a, b) => {
             return a.key - b.key;
         })
-        this.setState({
-            characterContents: list,
-            loading: false
-        }, () => {
-            console.log(cb);
-            cb != undefined ? cb() : null;
-        })
+            this.setState({
+                characterContents: list,
+                loading: false
+            }, () => {
+                console.log(cb);
+                cb != undefined ? cb() : null;
+            })
+
     }
     //获取指定书籍的指定章节
     getCharacter(num, cb) {
         if(num>=0){
+            this.setState({
+                loading: true
+            })
+            // RealmUtil.remove("HistoryChapter");
             this.currentChapter = num;
             let chapters = this.chapterLinks;
             let {link} = chapters[num];
@@ -120,6 +128,7 @@ class IReader extends Component {
             let realmChapter=RealmUtil.query(this.tableName,{id:'chapter' + num});
             if(realmChapter.length>0&&realmChapter[num]){
                 //本地缓存中有数据
+                // alert('从缓存中取值');
                 let {content}=realmChapter[num];
                 let {chapter}=JSON.parse(content);
                 this.getCharacterInner(chapters,chapter,num,cb);
@@ -133,8 +142,8 @@ class IReader extends Component {
                      this.getCharacterInner(chapters,chapter,num,cb);
                 })
             }
-            RealmUtil.remove("HistoryChapter");
-            RealmUtil.save("HistoryChapter",{id:this.currentChapter.toString()},false);
+            // RealmUtil.remove("HistoryChapter");
+            // RealmUtil.save("HistoryChapter",{id:this.currentChapter.toString()},false);
         }else{
             Toash.toastShort('已经是第一页');
         }
@@ -187,8 +196,13 @@ class IReader extends Component {
         let {x} = env.nativeEvent.contentOffset;
         let maxWidth = (this.chapterPageSize - 1) * deviceWidth - 300;
         //加载下一个章节信息
-        if (x > maxWidth) {
-            console.log("加载下一章节");
+
+        // alert(x+(parseInt(this.currentChapter)*deviceWidth));
+        // alert(`maxWidth:${maxWidth}`);
+        // alert(x > maxWidth);
+        if (x+(parseInt(this.currentChapter)*10*deviceWidth) > maxWidth) {
+            // alert("加载下一章节");
+            // alert(parseFloat(x)+4*parseFloat(this.currentChapter)*deviceWidth);
             let next = parseInt(Object.keys(this.chapterMap)[Object.keys(this.chapterMap).length - 1]) + 1;
             this.loadTwoPageData(next, 'next');
         }
