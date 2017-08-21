@@ -26,14 +26,11 @@ class IReader extends Component {
         this.chapterLinks=[];
         this.tableName="Chapter";
     }
-
     state = {
         characterContents: [],
         loading: false,
         chapterLinks: []
     }
-
-
     loadTwoPageData(num, type) {
         let next = 0;
         let pre = 0;
@@ -58,39 +55,9 @@ class IReader extends Component {
                 next = pre + 1;
             }
         }
-        let scrollView = this.refs.sv;
-        // console.time('耗时')
         this.getCharacter(num, () => {
-            setTimeout(()=>{
-                this.getCharacter(next, () => {
-                    // this.getCharacter(pre, () => {
-                    //     let key = Object.keys(this.chapterMap)[0];
-                    //     let val = this.chapterMap[key];
-                    //     if (type == 'next') {
-                    //
-                    //         if (num <= Object.keys(this.chapterMap).length - 3) {
-                    //             val = parseInt(this.chapterMap[Object.keys(this.chapterMap)[num]]) + parseInt(this.chapterMap[Object.keys(this.chapterMap)[num + 1]]) + parseInt(this.chapterMap[Object.keys(this.chapterMap)[num + 2]]);
-                    //         } else {
-                    //             val = parseInt(this.chapterMap[Object.keys(this.chapterMap)[num]]) + parseInt(this.chapterMap[Object.keys(this.chapterMap)[num + 1]]) + parseInt(this.chapterMap[Object.keys(this.chapterMap)[num + 2]]);
-                    //         }
-                    //     }
-                    //
-                    //     if (type == undefined &&num>0 || type == 'pre') {
-                    //         setTimeout(() => {
-                    //             scrollView.scrollTo({
-                    //                 x: (val) * deviceWidth,
-                    //                 y: 0,
-                    //                 animated: false
-                    //             })
-                    //         })
-                    //     }
-                    //
-                    //     // console.timeEnd('耗时')
-                    //
-                    // });
-                })
-            },10000)
-
+            this.getCharacter(next, () => {
+            })
         });
     }
     //获取书的所有章节
@@ -104,7 +71,9 @@ class IReader extends Component {
             let {chapters} = mixToc;
             this.chapterLinks=chapters;
             StorageUtil.save('chapterLinks' , {mixToc:{chapters}});
-            this.loadTwoPageData(0);
+            let history=RealmUtil.query("HistoryChapter");
+            let {id}=history[0];
+            this.loadTwoPageData(id!=undefined&&id>1?(id-2):0);
         });
     }
 
@@ -127,6 +96,8 @@ class IReader extends Component {
                 characterContent: [chunk]
             });
         })
+        this.chapterMap[inx - 1] = ary.length;
+        this.currentChapterPageSize = ary.length;
         list = this.state.characterContents.concat(list);
         list.sort((a, b) => {
             return a.key - b.key;
@@ -146,73 +117,30 @@ class IReader extends Component {
             let chapters = this.chapterLinks;
             let {link} = chapters[num];
             let BOOKCHAPTERSCONTENTURL = BOOK_CHAPTERS_CONTENT_URL(link);
-            // alert(1);
-            // RealmUtil.remove(this.tableName)
             let realmChapter=RealmUtil.query(this.tableName,{id:'chapter' + num});
-            alert("realmChapter.length>>>"+realmChapter.length);
             if(realmChapter.length>0&&realmChapter[num]){
                 //本地缓存中有数据
-                alert("本地缓存中有数据>>"+num);
-                // let {content}=realmChapter[num];
-                // let {chapter}=JSON.parse(content);
-                // this.getCharacterInner(chapters,chapter,num,cb);
-                // RealmUtil.remove('Chapter')
+                let {content}=realmChapter[num];
+                let {chapter}=JSON.parse(content);
+                this.getCharacterInner(chapters,chapter,num,cb);
             }else{
                 get(BOOKCHAPTERSCONTENTURL).then(({chapter}) => {
                     RealmUtil.save(this.tableName,{
                         id:'chapter' + num,
                         content:JSON.stringify({chapter})
                     },false);
-                    alert('发送ajax----'+'chapter' + num);
-                    // RealmUtil.remove('Chapter')
+                    // alert('发送ajax----'+'chapter' + num);
                      this.getCharacterInner(chapters,chapter,num,cb);
                 })
             }
-            // StorageUtil.removeKey('chapter' + num);
-            // StorageUtil.setSync('chapter' + num, BOOKCHAPTERSCONTENTURL, {}, 'chapter')
-            // StorageUtil.get('chapter' + num, ({chapter}) => {
-            //     let {title} = chapters[num];
-            //     title.replace(reg, function () {
-            //         inx = RegExp.$1;
-            //     })
-            //     StorageUtil.save('chapter' + num, {chapter});
-            //     let {body} = chapter;
-            //     var ary = _formatChapter(body);
-            //     this.chapterPageSize = this.state.characterContents.concat(ary).length;
-            //     this.currentChapterPageSize = ary.length;
-            //     ary.forEach((chunk, index) => {
-            //         list.push({
-            //             key: parseInt(num) * 1000 + parseInt(index),
-            //             characterName: title,
-            //             characterContent: [chunk]
-            //         });
-            //     })
-            //     this.chapterMap[inx - 1] = ary.length;
-            //     list = this.state.characterContents.concat(list);
-            //     list.sort((a, b) => {
-            //         return a.key - b.key;
-            //     })
-            //     this.setState({
-            //         characterContents: list,
-            //         loading: false
-            //     }, () => {
-            //         cb != undefined ? cb() : null;
-            //     })
-            // })
+            RealmUtil.remove("HistoryChapter");
+            RealmUtil.save("HistoryChapter",{id:this.currentChapter.toString()},false);
         }else{
             Toash.toastShort('已经是第一页');
         }
     }
 
     componentDidMount() {
-        // RealmUtil.save('Chapter',{
-        //     id:'1',
-        //     content:'内容'
-        // },true);
-        // let list=RealmUtil.query('Chapter');
-        // RealmUtil.remove('Chapter')
-        // alert(JSON.stringify(list));
-        // RealmUtil.remove('Chapter')
         this.getAllCharacter();
     }
 
@@ -246,7 +174,7 @@ class IReader extends Component {
         return (
             <View style={readerStyle.readerContent}>
                 <Text style={commonStyle.readerTitle}>
-                    {characterName}-----{index}
+                    {characterName}
                 </Text>
                 <View style={readerStyle.readerContentInner}>
                     {this.renderList(characterContent)}
@@ -262,10 +190,7 @@ class IReader extends Component {
         if (x > maxWidth) {
             console.log("加载下一章节");
             let next = parseInt(Object.keys(this.chapterMap)[Object.keys(this.chapterMap).length - 1]) + 1;
-            // this.getCharacter(next);
-            if (next < this.chapterPageSize) {
-                this.loadTwoPageData(next, 'next');
-            }
+            this.loadTwoPageData(next, 'next');
         }
         // console.log(x);
         if (x == 0 && this.currentChapter == 0) {
@@ -274,13 +199,12 @@ class IReader extends Component {
         //向前翻页 加载章节
         if (x == 0 && this.currentChapter != 0) {
             console.log("加载上一章节");
-            console.log(this.chapterMap);
             let scrollView = this.refs.sv;
             let pre = parseInt(Object.keys(this.chapterMap)[0]) - 1;
-            console.log(this.chapterMap);
             this.getCharacter(pre, () => {
                 let page = Object.keys(this.chapterMap).length == 2 ? this.currentChapterPageSize - 1 : this.currentChapterPageSize;
                 let myX = (page) * deviceWidth;
+                // alert(this.currentChapterPageSize);
                 scrollView.scrollTo({
                     x: myX,
                     y: 0,
@@ -289,7 +213,6 @@ class IReader extends Component {
             });
         }
     }
-
     renderLoading() {
         return (
             <View style={[readerStyle.loadingView]}>
@@ -301,7 +224,6 @@ class IReader extends Component {
             </View>
         )
     }
-
     render() {
         console.log('render...');
         return (

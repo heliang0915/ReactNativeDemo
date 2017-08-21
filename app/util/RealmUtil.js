@@ -8,8 +8,15 @@ const Chapter={
     }
 }
 
+const HistoryChapter={
+    name:"HistoryChapter",
+    properties:{  //字段
+        id:'string' //章节号
+    }
+}
+
 let realm=new Realm({
-    schema:[Chapter]
+    schema:[Chapter,HistoryChapter]
 })
 
 
@@ -41,7 +48,7 @@ let RealmUtil={
             schemaList=realm.objects(tableName);
             // alert("schemaList.length>>"+schemaList.length);
             // if(schemaList.length>0){
-            //     alert(f);
+            //     // alert(f);
             //     schemaList=schemaList.filtered(f);
             // }
 
