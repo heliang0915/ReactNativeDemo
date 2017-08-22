@@ -4,7 +4,7 @@
  * Date: 2017/7/21.
  */
 import React, {Component} from 'react';
-import {Text, ScrollView, StatusBar, StyleSheet, FlatList, View, Image} from 'react-native';
+import {Text, ScrollView, StatusBar, StyleSheet,TouchableHighlight, FlatList, View, Image} from 'react-native';
 import {deviceHeight, deviceWidth, pxToDp} from '../util/pxToDp';
 import {_formatChapter, _contentFormat} from '../util/FromateUtil';
 import commonStyle from '../commonstyle/common';
@@ -13,6 +13,8 @@ import Toash from '../util/ToashUtil'
 import RealmUtil from '../util/RealmUtil'
 import StorageUtil from '../util/StaticStore'
 import {BOOK_CHAPTERS_URL, BOOK_CHAPTERS_CONTENT_URL} from '../api/ApIURL';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 
 class IReader extends Component {
     constructor(props) {
@@ -23,14 +25,17 @@ class IReader extends Component {
         this.currentChapter = 0;
         this.chapterMap = {};
         this.currentChapterPageSize = 0;
-        this.chapterLinks=[];
-        this.tableName="Chapter";
+        this.chapterLinks = [];
+        this.tableName = "Chapter";
     }
+
     state = {
         characterContents: [],
         loading: false,
-        chapterLinks: []
+        chapterLinks: [],
+        showBar: false
     }
+
     loadTwoPageData(num, type) {
         let next = 0;
         let pre = 0;
@@ -38,7 +43,7 @@ class IReader extends Component {
         if (type == undefined) {
             if (num == 0) {
                 next = num + 2;
-                pre=num+1;
+                pre = num + 1;
             } else if (num == this.state.chapterLinks.length - 1) {
                 next = this.state.chapterLinks.length - 1;
                 pre = next - 1;
@@ -63,24 +68,29 @@ class IReader extends Component {
             })
         });
     }
+
     //获取书的所有章节
     getAllCharacter() {
         let BOOKCHAPTERSURL = BOOK_CHAPTERS_URL(this.bookId);
         StorageUtil.setSync('chapterLinks', BOOKCHAPTERSURL, {}, 'chapter')
         StorageUtil.get('chapterLinks', ({mixToc}) => {
             let {chapters} = mixToc;
-            this.chapterLinks=chapters;
-            StorageUtil.save('chapterLinks' , {mixToc:{chapters}});
-            let history=RealmUtil.query("HistoryChapter");
-            if(history&&Object.keys(history).length){
-                let {id}=history[0];
-                this.loadTwoPageData(id!=undefined&&id>1?(id-2):0);
-            }else{
+            this.chapterLinks = chapters;
+            StorageUtil.save('chapterLinks', {mixToc: {chapters}});
+            let history = RealmUtil.query("HistoryChapter");
+            this.setState({
+                loading: true
+            })
+            if (history && Object.keys(history).length) {
+                let {id} = history[0];
+                this.loadTwoPageData(id != undefined && id > 1 ? (id - 2) : 0);
+            } else {
                 this.loadTwoPageData(0);
             }
         });
     }
-    getCharacterInner(chapters,chapter,num,cb){
+
+    getCharacterInner(chapters, chapter, num, cb) {
 
         let list = [];
         let inx = 0;
@@ -105,46 +115,44 @@ class IReader extends Component {
         list.sort((a, b) => {
             return a.key - b.key;
         })
-            this.setState({
-                characterContents: list,
-                loading: false
-            }, () => {
-                console.log(cb);
-                cb != undefined ? cb() : null;
-            })
+        this.setState({
+            characterContents: list,
+            loading: false
+        }, () => {
+            console.log(cb);
+            cb != undefined ? cb() : null;
+        })
 
     }
+
     //获取指定书籍的指定章节
     getCharacter(num, cb) {
-        if(num>=0){
-            this.setState({
-                loading: true
-            })
+        if (num >= 0) {
             // RealmUtil.remove("HistoryChapter");
             this.currentChapter = num;
             let chapters = this.chapterLinks;
             let {link} = chapters[num];
             let BOOKCHAPTERSCONTENTURL = BOOK_CHAPTERS_CONTENT_URL(link);
-            let realmChapter=RealmUtil.query(this.tableName,{id:'chapter' + num});
-            if(realmChapter.length>0&&realmChapter[num]){
+            let realmChapter = RealmUtil.query(this.tableName, {id: 'chapter' + num});
+            if (realmChapter.length > 0 && realmChapter[num]) {
                 //本地缓存中有数据
                 // alert('从缓存中取值');
-                let {content}=realmChapter[num];
-                let {chapter}=JSON.parse(content);
-                this.getCharacterInner(chapters,chapter,num,cb);
-            }else{
+                let {content} = realmChapter[num];
+                let {chapter} = JSON.parse(content);
+                this.getCharacterInner(chapters, chapter, num, cb);
+            } else {
                 get(BOOKCHAPTERSCONTENTURL).then(({chapter}) => {
-                    RealmUtil.save(this.tableName,{
-                        id:'chapter' + num,
-                        content:JSON.stringify({chapter})
-                    },false);
+                    RealmUtil.save(this.tableName, {
+                        id: 'chapter' + num,
+                        content: JSON.stringify({chapter})
+                    }, false);
                     // alert('发送ajax----'+'chapter' + num);
-                     this.getCharacterInner(chapters,chapter,num,cb);
+                    this.getCharacterInner(chapters, chapter, num, cb);
                 })
             }
             // RealmUtil.remove("HistoryChapter");
             // RealmUtil.save("HistoryChapter",{id:this.currentChapter.toString()},false);
-        }else{
+        } else {
             Toash.toastShort('已经是第一页');
         }
     }
@@ -165,13 +173,18 @@ class IReader extends Component {
         characterContent[0].forEach((content, index) => {
             ary.push(
                 <View key={index}>
-                    <Text style={{
-                        fontSize: 18,
-                        color: "#604733",
-                        lineHeight: 34
-                    }}>
-                        {content}
-                    </Text>
+                    <TouchableHighlight onPress={this.changeBarState.bind(this,true)}>
+                        <Text style={{
+                            fontSize: 18,
+                            color: "#604733",
+                            lineHeight: 34
+                        }} >
+
+                            {content}
+
+                        </Text>
+                    </TouchableHighlight>
+
                 </View>
             )
         })
@@ -182,20 +195,25 @@ class IReader extends Component {
         let {characterName, characterContent} = item;
         return (
             <View style={readerStyle.readerContent}>
-                <Text style={commonStyle.readerTitle}>
-                    {characterName}
-                </Text>
-                <View style={readerStyle.readerContentInner}>
-                    {this.renderList(characterContent)}
-                </View>
+
+                    <Text style={commonStyle.readerTitle}>
+                        {characterName}
+                    </Text>
+                    <View style={readerStyle.readerContentInner}>
+
+                            {this.renderList(characterContent)}
+
+                    </View>
+
             </View>
         )
     }
+
     _scrollEnd(env) {
         let {x} = env.nativeEvent.contentOffset;
         let maxWidth = (this.chapterPageSize - 1) * deviceWidth - 300;
         //加载下一个章节信息
-        if (x+(parseInt(this.currentChapter)*10*deviceWidth) > maxWidth) {
+        if (x + (parseInt(this.currentChapter) * 10 * deviceWidth) > maxWidth) {
             let next = parseInt(Object.keys(this.chapterMap)[Object.keys(this.chapterMap).length - 1]) + 1;
             this.loadTwoPageData(next, 'next');
         }
@@ -219,6 +237,7 @@ class IReader extends Component {
             });
         }
     }
+
     renderLoading() {
         return (
             <View style={[readerStyle.loadingView]}>
@@ -230,21 +249,15 @@ class IReader extends Component {
             </View>
         )
     }
+
     render() {
-        console.log('render...');
         return (
             <View>
-                <StatusBar
-                    hidden={true}
-                    translucent={true}
-                    showHideTransition={'slide'}
-                    barStyle={'light-content'}/>
 
                 <Image source={require('../assets/read_bg.jpg')} style={readerStyle.readerBg}>
                     {
                         (this.state.loading == true) ? this.renderLoading() : null
                     }
-
                     <ScrollView
                         ref="sv"
                         horizontal={true}
@@ -268,11 +281,42 @@ class IReader extends Component {
                         />
                     </ScrollView>
                 </Image>
+                {this.state.showBar?this.renderBar():null}
             </View>
+        )
+    }
 
+    //改变工具栏状态
+    changeBarState(state){
+        alert(1);
+        this.setState({
+            showBar:state
+        })
+    }
+
+    //显示上下工具栏
+    renderBar() {
+        return (
+            <View style={readerStyle.barView}>
+                <View style={readerStyle.barTop}>
+                    <Icon name="ios-trophy" size={28} color="#FFF"/>
+                    <View>
+                        <Text>动作1</Text>
+                        <Text>动作2</Text>
+                    </View>
+                </View>
+                <Text style={readerStyle.barCenter} onPress={this.changeBarState.bind(this,false)}/>
+                <View style={readerStyle.barBottom}>
+                    <Text>动作1</Text>
+                    <Text>动作2</Text>
+                    <Text>动作1</Text>
+                    <Text>动作2</Text>
+                </View>
+            </View>
         )
     }
 }
+
 const readerStyle = StyleSheet.create({
     readerBg: {
         width: deviceWidth,
@@ -282,6 +326,26 @@ const readerStyle = StyleSheet.create({
         width: deviceWidth,
         height: deviceHeight,
         flex: 1
+    },
+    barView: {
+        position: 'absolute',
+        width: deviceWidth,
+        height: deviceHeight
+    },
+    barTop: {
+        height:100,
+        width: deviceWidth,
+        backgroundColor: '#000',
+        opacity:.9
+    },
+    barCenter:{
+        height: deviceHeight-220,
+    },
+    barBottom: {
+        height: 100,
+        width: deviceWidth,
+        backgroundColor: '#000',
+        opacity:.9
     },
     loadingView: {
         justifyContent: 'center',
