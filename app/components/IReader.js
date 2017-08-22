@@ -191,18 +191,11 @@ class IReader extends Component {
             </View>
         )
     }
-
     _scrollEnd(env) {
         let {x} = env.nativeEvent.contentOffset;
         let maxWidth = (this.chapterPageSize - 1) * deviceWidth - 300;
         //加载下一个章节信息
-
-        // alert(x+(parseInt(this.currentChapter)*deviceWidth));
-        // alert(`maxWidth:${maxWidth}`);
-        // alert(x > maxWidth);
         if (x+(parseInt(this.currentChapter)*10*deviceWidth) > maxWidth) {
-            // alert("加载下一章节");
-            // alert(parseFloat(x)+4*parseFloat(this.currentChapter)*deviceWidth);
             let next = parseInt(Object.keys(this.chapterMap)[Object.keys(this.chapterMap).length - 1]) + 1;
             this.loadTwoPageData(next, 'next');
         }
@@ -218,7 +211,6 @@ class IReader extends Component {
             this.getCharacter(pre, () => {
                 let page = Object.keys(this.chapterMap).length == 2 ? this.currentChapterPageSize - 1 : this.currentChapterPageSize;
                 let myX = (page) * deviceWidth;
-                // alert(this.currentChapterPageSize);
                 scrollView.scrollTo({
                     x: myX,
                     y: 0,
@@ -281,7 +273,6 @@ class IReader extends Component {
         )
     }
 }
-
 const readerStyle = StyleSheet.create({
     readerBg: {
         width: deviceWidth,
@@ -328,6 +319,4 @@ const readerStyle = StyleSheet.create({
         paddingRight: pxToDp(30)
     }
 });
-
-
 export default IReader;
