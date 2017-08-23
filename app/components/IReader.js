@@ -16,6 +16,8 @@ import {BOOK_CHAPTERS_URL, BOOK_CHAPTERS_CONTENT_URL} from '../api/ApIURL';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 
+
+
 class IReader extends Component {
     constructor(props) {
         super(props);
@@ -35,6 +37,10 @@ class IReader extends Component {
         chapterLinks: [],
         showBar: false
     }
+
+
+
+
 
     loadTwoPageData(num, type) {
         let next = 0;
@@ -297,18 +303,30 @@ class IReader extends Component {
         return (
             <View style={readerStyle.barView}>
                 <View style={readerStyle.barTop}>
-                    <Icon name="ios-trophy" size={28} color="#FFF"/>
-                    <View>
-                        <Text>动作1</Text>
-                        <Text>动作2</Text>
+                    <Icon name="ios-arrow-back" size={pxToDp(38)} style={readerStyle.barTopLeft} color="#FFF"/>
+                    <View  style={readerStyle.barTopRight}>
+                        <Text style={readerStyle.barTxt}>社区</Text>
+                        <Text style={readerStyle.barTxt}>简介</Text>
                     </View>
                 </View>
                 <Text style={readerStyle.barCenter} onPress={this.changeBarState.bind(this,false)}/>
                 <View style={readerStyle.barBottom}>
-                    <Text>动作1</Text>
-                    <Text>动作2</Text>
-                    <Text>动作1</Text>
-                    <Text>动作2</Text>
+                    <View style={readerStyle.barBottomInnerView}>
+                        <Icon name="ios-moon" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
+                        <Text style={readerStyle.barBottomTxt}>夜间</Text>
+                    </View>
+                    <View style={readerStyle.barBottomInnerView}>
+                        <Icon name="ios-settings" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
+                    <Text style={readerStyle.barBottomTxt}>设置</Text>
+                    </View>
+                    <View style={readerStyle.barBottomInnerView}>
+                        <Icon name="ios-cloud-download" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
+                        <Text style={readerStyle.barBottomTxt}>缓存</Text>
+                    </View>
+                    <View style={readerStyle.barBottomInnerView}>
+                        <Icon name="ios-menu" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
+                        <Text style={readerStyle.barBottomTxt}>目录</Text>
+                    </View>
                 </View>
             </View>
         )
@@ -334,7 +352,37 @@ const readerStyle = StyleSheet.create({
         height:100,
         width: deviceWidth,
         backgroundColor: '#000',
-        opacity:.9
+        opacity:.9,
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center'
+    },
+    barTopLeft:{
+
+    },
+    barTopRight:{
+        // backgroundColor:"#FFF",
+        flexDirection:'row',
+
+    },
+    barTxt:{
+      fontSize:pxToDp(20),
+      color:"#FFF",
+      marginRight:pxToDp(10)
+    },
+    barBottomInnerView:{
+        flexDirection:'column',
+        flex:1,
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    barBottomTxt:{
+      fontSize:pxToDp(20),
+      color:"#FFF",
+      marginRight:pxToDp(10),
+        // flex:1,
+        marginLeft:15,
+      textAlign:'center'
     },
     barCenter:{
         height: deviceHeight-220,
@@ -343,7 +391,10 @@ const readerStyle = StyleSheet.create({
         height: 100,
         width: deviceWidth,
         backgroundColor: '#000',
-        opacity:.9
+        opacity:.9,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center'
     },
     loadingView: {
         justifyContent: 'center',

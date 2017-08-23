@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 // import MyWebView from './app/Web'
+// import MyWebView from './app/views/WellCome'
 import MyWebView from './app/components/IReader'
 // ./gradlew assembleRelease
 
