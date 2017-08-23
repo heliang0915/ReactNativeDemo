@@ -4,13 +4,13 @@
  * Date: 2017/7/21.
  */
 import React, {Component} from 'react';
-import {Text, ScrollView, StatusBar, StyleSheet,TouchableHighlight, FlatList, View, Image} from 'react-native';
+import {Text, ScrollView, StatusBar, StyleSheet,TouchableOpacity, FlatList, View, Image} from 'react-native';
 import {deviceHeight, deviceWidth, pxToDp} from '../util/pxToDp';
 import {_formatChapter, _contentFormat} from '../util/FromateUtil';
 import commonStyle from '../commonstyle/common';
 import {get} from '../util/FetchUtil';
 import Toash from '../util/ToashUtil'
-import RealmUtil from '../util/RealmUtil'
+// import RealmUtil from '../util/RealmUtil'
 import StorageUtil from '../util/StaticStore'
 import {BOOK_CHAPTERS_URL, BOOK_CHAPTERS_CONTENT_URL} from '../api/ApIURL';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -77,16 +77,16 @@ class IReader extends Component {
             let {chapters} = mixToc;
             this.chapterLinks = chapters;
             StorageUtil.save('chapterLinks', {mixToc: {chapters}});
-            let history = RealmUtil.query("HistoryChapter");
+            // let history = RealmUtil.query("HistoryChapter");
             this.setState({
                 loading: true
             })
-            if (history && Object.keys(history).length) {
-                let {id} = history[0];
-                this.loadTwoPageData(id != undefined && id > 1 ? (id - 2) : 0);
-            } else {
+            // if (history && Object.keys(history).length) {
+            //     let {id} = history[0];
+            //     this.loadTwoPageData(id != undefined && id > 1 ? (id - 2) : 0);
+            // } else {
                 this.loadTwoPageData(0);
-            }
+            // }
         });
     }
 
@@ -119,7 +119,7 @@ class IReader extends Component {
             characterContents: list,
             loading: false
         }, () => {
-            console.log(cb);
+            // console.log(cb);
             cb != undefined ? cb() : null;
         })
 
@@ -133,23 +133,23 @@ class IReader extends Component {
             let chapters = this.chapterLinks;
             let {link} = chapters[num];
             let BOOKCHAPTERSCONTENTURL = BOOK_CHAPTERS_CONTENT_URL(link);
-            let realmChapter = RealmUtil.query(this.tableName, {id: 'chapter' + num});
-            if (realmChapter.length > 0 && realmChapter[num]) {
-                //本地缓存中有数据
-                // alert('从缓存中取值');
-                let {content} = realmChapter[num];
-                let {chapter} = JSON.parse(content);
-                this.getCharacterInner(chapters, chapter, num, cb);
-            } else {
+            // let realmChapter = RealmUtil.query(this.tableName, {id: 'chapter' + num});
+            // if (realmChapter.length > 0 && realmChapter[num]) {
+            //     //本地缓存中有数据
+            //     // alert('从缓存中取值');
+            //     let {content} = realmChapter[num];
+            //     let {chapter} = JSON.parse(content);
+            //     this.getCharacterInner(chapters, chapter, num, cb);
+            // } else {
                 get(BOOKCHAPTERSCONTENTURL).then(({chapter}) => {
-                    RealmUtil.save(this.tableName, {
-                        id: 'chapter' + num,
-                        content: JSON.stringify({chapter})
-                    }, false);
+                    // RealmUtil.save(this.tableName, {
+                    //     id: 'chapter' + num,
+                    //     content: JSON.stringify({chapter})
+                    // }, false);
                     // alert('发送ajax----'+'chapter' + num);
                     this.getCharacterInner(chapters, chapter, num, cb);
                 })
-            }
+            // }
             // RealmUtil.remove("HistoryChapter");
             // RealmUtil.save("HistoryChapter",{id:this.currentChapter.toString()},false);
         } else {
@@ -172,8 +172,8 @@ class IReader extends Component {
         let ary = [];
         characterContent[0].forEach((content, index) => {
             ary.push(
-                <View key={index}>
-                    <TouchableHighlight onPress={this.changeBarState.bind(this,true)}>
+
+                <View  key={index}>
                         <Text style={{
                             fontSize: 18,
                             color: "#604733",
@@ -183,9 +183,10 @@ class IReader extends Component {
                             {content}
 
                         </Text>
-                    </TouchableHighlight>
+
 
                 </View>
+
             )
         })
         return ary;
@@ -194,18 +195,16 @@ class IReader extends Component {
     renderItem = ({item, index}) => {
         let {characterName, characterContent} = item;
         return (
-            <View style={readerStyle.readerContent}>
-
+            <TouchableOpacity activeOpacity={1} style={readerStyle.readerContent}  onPress={this.changeBarState.bind(this,true)}>
+                <View >
                     <Text style={commonStyle.readerTitle}>
                         {characterName}
                     </Text>
                     <View style={readerStyle.readerContentInner}>
-
-                            {this.renderList(characterContent)}
-
+                        {this.renderList(characterContent)}
                     </View>
-
-            </View>
+                </View>
+            </TouchableOpacity>
         )
     }
 
@@ -253,7 +252,6 @@ class IReader extends Component {
     render() {
         return (
             <View>
-
                 <Image source={require('../assets/read_bg.jpg')} style={readerStyle.readerBg}>
                     {
                         (this.state.loading == true) ? this.renderLoading() : null
@@ -268,6 +266,7 @@ class IReader extends Component {
                         onMomentumScrollEnd={this._scrollEnd.bind(this)}
                     >
                         <FlatList
+
                             extraData={this.state.characterContents}
                             numColumns={1}
                             horizontal={true}
@@ -288,7 +287,6 @@ class IReader extends Component {
 
     //改变工具栏状态
     changeBarState(state){
-        alert(1);
         this.setState({
             showBar:state
         })

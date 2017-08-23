@@ -49,7 +49,7 @@ var StorageUtil={
            syncInBackground: true,
 
        }).then((rest)=>{
-           console.log(rest);
+           // console.log(rest);
            cb(rest);
        })
     },
