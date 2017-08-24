@@ -178,21 +178,15 @@ class IReader extends Component {
         let ary = [];
         characterContent[0].forEach((content, index) => {
             ary.push(
-
                 <View  key={index}>
                         <Text style={{
                             fontSize: 18,
                             color: "#604733",
                             lineHeight: 34
                         }} >
-
                             {content}
-
                         </Text>
-
-
                 </View>
-
             )
         })
         return ary;
@@ -258,6 +252,11 @@ class IReader extends Component {
     render() {
         return (
             <View>
+                <StatusBar
+                    backgroundColor="blue"
+                    barStyle="light-content"
+                    animated={true}
+                />
                 <Image source={require('../assets/read_bg.jpg')} style={readerStyle.readerBg}>
                     {
                         (this.state.loading == true) ? this.renderLoading() : null
@@ -297,13 +296,14 @@ class IReader extends Component {
             showBar:state
         })
     }
-
     //显示上下工具栏
     renderBar() {
         return (
             <View style={readerStyle.barView}>
                 <View style={readerStyle.barTop}>
-                    <Icon name="ios-arrow-back" size={pxToDp(38)} style={readerStyle.barTopLeft} color="#FFF"/>
+                    <TouchableOpacity style={readerStyle.barBack} onPress={()=>alert('返回')}>
+                        <Icon name="ios-arrow-back" size={pxToDp(48)} style={readerStyle.barTopLeft} color="#FFF"/>
+                    </TouchableOpacity>
                     <View  style={readerStyle.barTopRight}>
                         <Text style={readerStyle.barTxt}>社区</Text>
                         <Text style={readerStyle.barTxt}>简介</Text>
@@ -312,20 +312,28 @@ class IReader extends Component {
                 <Text style={readerStyle.barCenter} onPress={this.changeBarState.bind(this,false)}/>
                 <View style={readerStyle.barBottom}>
                     <View style={readerStyle.barBottomInnerView}>
-                        <Icon name="ios-moon" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
-                        <Text style={readerStyle.barBottomTxt}>夜间</Text>
+                        <TouchableOpacity style={readerStyle.barBottomInnerView} onPress={()=>alert('夜间')}>
+                            <Icon name="ios-moon" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
+                            <Text style={readerStyle.barBottomTxt}>夜间</Text>
+                        </TouchableOpacity>
                     </View>
                     <View style={readerStyle.barBottomInnerView}>
-                        <Icon name="ios-settings" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
-                    <Text style={readerStyle.barBottomTxt}>设置</Text>
+                        <TouchableOpacity style={readerStyle.barBottomInnerView} onPress={()=>alert('设置')}>
+                            <Icon name="ios-settings" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
+                            <Text style={readerStyle.barBottomTxt}>设置</Text>
+                        </TouchableOpacity>
                     </View>
                     <View style={readerStyle.barBottomInnerView}>
-                        <Icon name="ios-cloud-download" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
-                        <Text style={readerStyle.barBottomTxt}>缓存</Text>
+                        <TouchableOpacity style={readerStyle.barBottomInnerView} onPress={()=>alert('缓存')}>
+                            <Icon name="ios-cloud-download" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
+                            <Text style={readerStyle.barBottomTxt}>缓存</Text>
+                        </TouchableOpacity>
                     </View>
                     <View style={readerStyle.barBottomInnerView}>
-                        <Icon name="ios-menu" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
-                        <Text style={readerStyle.barBottomTxt}>目录</Text>
+                        <TouchableOpacity style={readerStyle.barBottomInnerView} onPress={()=>alert('目录')}>
+                            <Icon name="ios-menu" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
+                            <Text style={readerStyle.barBottomTxt}>目录</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
@@ -349,7 +357,7 @@ const readerStyle = StyleSheet.create({
         height: deviceHeight
     },
     barTop: {
-        height:100,
+        height:80,
         width: deviceWidth,
         backgroundColor: '#000',
         opacity:.9,
@@ -361,9 +369,7 @@ const readerStyle = StyleSheet.create({
 
     },
     barTopRight:{
-        // backgroundColor:"#FFF",
         flexDirection:'row',
-
     },
     barTxt:{
       fontSize:pxToDp(20),
@@ -376,6 +382,9 @@ const readerStyle = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center'
     },
+    barBack:{
+        paddingLeft:pxToDp(20)
+    },
     barBottomTxt:{
       fontSize:pxToDp(20),
       color:"#FFF",
@@ -385,7 +394,7 @@ const readerStyle = StyleSheet.create({
       textAlign:'center'
     },
     barCenter:{
-        height: deviceHeight-220,
+        height: deviceHeight-200,
     },
     barBottom: {
         height: 100,
