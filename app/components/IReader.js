@@ -4,7 +4,7 @@
  * Date: 2017/7/21.
  */
 import React, {Component} from 'react';
-import {Text, ScrollView, StatusBar, StyleSheet,TouchableOpacity, FlatList, View, Image} from 'react-native';
+import {Text, ScrollView, Animated, StatusBar, StyleSheet, TouchableOpacity, FlatList, View, Image} from 'react-native';
 import {deviceHeight, deviceWidth, pxToDp} from '../util/pxToDp';
 import {_formatChapter, _contentFormat} from '../util/FromateUtil';
 import commonStyle from '../commonstyle/common';
@@ -14,9 +14,6 @@ import Toash from '../util/ToashUtil'
 import StorageUtil from '../util/StaticStore'
 import {BOOK_CHAPTERS_URL, BOOK_CHAPTERS_CONTENT_URL} from '../api/ApIURL';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-
-
 
 class IReader extends Component {
     constructor(props) {
@@ -35,12 +32,11 @@ class IReader extends Component {
         characterContents: [],
         loading: false,
         chapterLinks: [],
-        showBar: false
+        showBar: false,
+        showChapter: false,
+        translateX: new Animated.Value(2 * deviceWidth),
+        opacity: new Animated.Value(0)
     }
-
-
-
-
 
     loadTwoPageData(num, type) {
         let next = 0;
@@ -91,7 +87,7 @@ class IReader extends Component {
             //     let {id} = history[0];
             //     this.loadTwoPageData(id != undefined && id > 1 ? (id - 2) : 0);
             // } else {
-                this.loadTwoPageData(0);
+            this.loadTwoPageData(0);
             // }
         });
     }
@@ -128,7 +124,6 @@ class IReader extends Component {
             // console.log(cb);
             cb != undefined ? cb() : null;
         })
-
     }
 
     //获取指定书籍的指定章节
@@ -147,14 +142,14 @@ class IReader extends Component {
             //     let {chapter} = JSON.parse(content);
             //     this.getCharacterInner(chapters, chapter, num, cb);
             // } else {
-                get(BOOKCHAPTERSCONTENTURL).then(({chapter}) => {
-                    // RealmUtil.save(this.tableName, {
-                    //     id: 'chapter' + num,
-                    //     content: JSON.stringify({chapter})
-                    // }, false);
-                    // alert('发送ajax----'+'chapter' + num);
-                    this.getCharacterInner(chapters, chapter, num, cb);
-                })
+            get(BOOKCHAPTERSCONTENTURL).then(({chapter}) => {
+                // RealmUtil.save(this.tableName, {
+                //     id: 'chapter' + num,
+                //     content: JSON.stringify({chapter})
+                // }, false);
+                // alert('发送ajax----'+'chapter' + num);
+                this.getCharacterInner(chapters, chapter, num, cb);
+            })
             // }
             // RealmUtil.remove("HistoryChapter");
             // RealmUtil.save("HistoryChapter",{id:this.currentChapter.toString()},false);
@@ -178,14 +173,14 @@ class IReader extends Component {
         let ary = [];
         characterContent[0].forEach((content, index) => {
             ary.push(
-                <View  key={index}>
-                        <Text style={{
-                            fontSize: 18,
-                            color: "#604733",
-                            lineHeight: 34
-                        }} >
-                            {content}
-                        </Text>
+                <View key={index}>
+                    <Text style={{
+                        fontSize: 18,
+                        color: "#604733",
+                        lineHeight: 34
+                    }}>
+                        {content}
+                    </Text>
                 </View>
             )
         })
@@ -195,8 +190,9 @@ class IReader extends Component {
     renderItem = ({item, index}) => {
         let {characterName, characterContent} = item;
         return (
-            <TouchableOpacity activeOpacity={1} style={readerStyle.readerContent}  onPress={this.changeBarState.bind(this,true)}>
-                <View >
+            <TouchableOpacity activeOpacity={1} style={readerStyle.readerContent}
+                              onPress={this.changeBarState.bind(this, true)}>
+                <View>
                     <Text style={commonStyle.readerTitle}>
                         {characterName}
                     </Text>
@@ -285,52 +281,56 @@ class IReader extends Component {
                         />
                     </ScrollView>
                 </Image>
-                {this.state.showBar?this.renderBar():null}
+                {this.state.showBar ? this.renderBar() : null}
+                {this.chapterView()}
             </View>
         )
     }
 
     //改变工具栏状态
-    changeBarState(state){
+    changeBarState(state) {
         this.setState({
-            showBar:state
+            showBar: state
         })
     }
+
     //显示上下工具栏
     renderBar() {
         return (
             <View style={readerStyle.barView}>
                 <View style={readerStyle.barTop}>
-                    <TouchableOpacity style={readerStyle.barBack} onPress={()=>alert('返回')}>
+                    <TouchableOpacity style={readerStyle.barBack} onPress={() => alert('返回')}>
                         <Icon name="ios-arrow-back" size={pxToDp(48)} style={readerStyle.barTopLeft} color="#FFF"/>
                     </TouchableOpacity>
-                    <View  style={readerStyle.barTopRight}>
+                    <View style={readerStyle.barTopRight}>
                         <Text style={readerStyle.barTxt}>社区</Text>
                         <Text style={readerStyle.barTxt}>简介</Text>
                     </View>
                 </View>
-                <Text style={readerStyle.barCenter} onPress={this.changeBarState.bind(this,false)}/>
+                <Text style={readerStyle.barCenter} onPress={this.changeBarState.bind(this, false)}/>
                 <View style={readerStyle.barBottom}>
                     <View style={readerStyle.barBottomInnerView}>
-                        <TouchableOpacity style={readerStyle.barBottomInnerView} onPress={()=>alert('夜间')}>
+                        <TouchableOpacity style={readerStyle.barBottomInnerView} onPress={() => alert('夜间')}>
                             <Icon name="ios-moon" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
                             <Text style={readerStyle.barBottomTxt}>夜间</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={readerStyle.barBottomInnerView}>
-                        <TouchableOpacity style={readerStyle.barBottomInnerView} onPress={()=>alert('设置')}>
+                        <TouchableOpacity style={readerStyle.barBottomInnerView} onPress={() => alert('设置')}>
                             <Icon name="ios-settings" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
                             <Text style={readerStyle.barBottomTxt}>设置</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={readerStyle.barBottomInnerView}>
-                        <TouchableOpacity style={readerStyle.barBottomInnerView} onPress={()=>alert('缓存')}>
-                            <Icon name="ios-cloud-download" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
+                        <TouchableOpacity style={readerStyle.barBottomInnerView} onPress={() => alert('缓存')}>
+                            <Icon name="ios-cloud-download" size={pxToDp(28)} style={readerStyle.barTopLeft}
+                                  color="#FFF"/>
                             <Text style={readerStyle.barBottomTxt}>缓存</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={readerStyle.barBottomInnerView}>
-                        <TouchableOpacity style={readerStyle.barBottomInnerView} onPress={()=>alert('目录')}>
+                        <TouchableOpacity style={readerStyle.barBottomInnerView}
+                                          onPress={this.chapterHandler.bind(this, true)}>
                             <Icon name="ios-menu" size={pxToDp(28)} style={readerStyle.barTopLeft} color="#FFF"/>
                             <Text style={readerStyle.barBottomTxt}>目录</Text>
                         </TouchableOpacity>
@@ -339,6 +339,94 @@ class IReader extends Component {
             </View>
         )
     }
+
+    //目录菜单右侧滑出
+    chapterView() {
+        return (
+
+            <Animated.View onPress={this.hiddenChapter.bind(this)} style={[readerStyle.chapterViewOuter, {
+                transform: [{translateX: this.state.translateX}]
+            }]}>
+                <ScrollView style={readerStyle.chapterView}>
+                    <View style={readerStyle.chapterMenuView}>
+                        <Text style={readerStyle.chapterMenuText}>
+                            目录
+                        </Text>
+                    </View>
+
+                    <TouchableOpacity activeOpacity={1} onPress={this.selectChapter.bind(this)}>
+                        <View style={readerStyle.chapterItemView}>
+                            <Text style={readerStyle.chapterItemText}>
+                                01.第一章 前往遗迹
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={1}>
+                        <View style={readerStyle.chapterItemView}>
+                            <Text style={readerStyle.chapterItemText}>
+                                01.第一章 前往遗迹
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={1}>
+                        <View style={readerStyle.chapterItemView}>
+                            <Text style={readerStyle.chapterItemText}>
+                                01.第一章 前往遗迹
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                </ScrollView>
+
+            </Animated.View>
+        )
+    }
+
+    //目录操作
+    chapterHandler() {
+        // Animated.sequence([
+            Animated.timing(this.state.translateX, {
+                toValue: 0,
+                useNativeDriver: true
+            }).start();
+            // ,
+            // Animated.timing(this.state.translateX, {
+            //     toValue: 0.8,
+            //     useNativeDriver: true
+            // })
+
+        // ]).start();
+
+        // alert(JSON.stringify(this.state.translateX));
+        // this.setState({
+        //     showChapter:state
+        // })
+    }
+
+    hiddenChapter() {
+        Animated.timing(this.state.translateX, {
+            toValue: 2 * deviceWidth,
+            useNativeDriver: true
+        }).start();
+        // Animated.sequence([
+        //     Animated.timing(this.state.translateX, {
+        //         toValue: 2 * deviceWidth,
+        //         useNativeDriver: true
+        //     })
+        //     // ,
+        //     // Animated.timing(this.state.opacity, {
+        //     //     toValue: 0,
+        //     //     useNativeDriver: true
+        //     // })
+        // ]).start();
+    }
+
+    //选中章节
+    selectChapter() {
+        this.hiddenChapter();
+        this.changeBarState(false);
+    }
+
+
 }
 
 const readerStyle = StyleSheet.create({
@@ -357,53 +445,51 @@ const readerStyle = StyleSheet.create({
         height: deviceHeight
     },
     barTop: {
-        height:80,
+        height: 80,
         width: deviceWidth,
         backgroundColor: '#000',
-        opacity:.9,
-        flexDirection:'row',
-        justifyContent:'space-between',
-        alignItems:'center'
+        opacity: .9,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
-    barTopLeft:{
-
+    barTopLeft: {},
+    barTopRight: {
+        flexDirection: 'row',
     },
-    barTopRight:{
-        flexDirection:'row',
+    barTxt: {
+        fontSize: pxToDp(20),
+        color: "#FFF",
+        marginRight: pxToDp(10)
     },
-    barTxt:{
-      fontSize:pxToDp(20),
-      color:"#FFF",
-      marginRight:pxToDp(10)
+    barBottomInnerView: {
+        flexDirection: 'column',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
-    barBottomInnerView:{
-        flexDirection:'column',
-        flex:1,
-        justifyContent:'center',
-        alignItems:'center'
+    barBack: {
+        paddingLeft: pxToDp(20)
     },
-    barBack:{
-        paddingLeft:pxToDp(20)
-    },
-    barBottomTxt:{
-      fontSize:pxToDp(20),
-      color:"#FFF",
-      marginRight:pxToDp(10),
+    barBottomTxt: {
+        fontSize: pxToDp(20),
+        color: "#FFF",
+        marginRight: pxToDp(10),
         // flex:1,
-        marginLeft:15,
-      textAlign:'center'
+        marginLeft: 15,
+        textAlign: 'center'
     },
-    barCenter:{
-        height: deviceHeight-200,
+    barCenter: {
+        height: deviceHeight - 200,
     },
     barBottom: {
         height: 100,
         width: deviceWidth,
         backgroundColor: '#000',
-        opacity:.9,
-        flexDirection:'row',
-        justifyContent:'center',
-        alignItems:'center'
+        opacity: .9,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     loadingView: {
         justifyContent: 'center',
@@ -439,6 +525,47 @@ const readerStyle = StyleSheet.create({
     readerContentInner: {
         paddingLeft: pxToDp(30),
         paddingRight: pxToDp(30)
+    },
+    chapterViewOuter: {
+        height: deviceHeight,
+        width: deviceWidth,
+        backgroundColor: '#000',
+        opacity: .8,
+        position: 'absolute',
+        top: pxToDp(62),
+        zIndex: 4
+    },
+    chapterView: {
+        backgroundColor: '#FFF',
+        height: deviceHeight - pxToDp(150),
+        width: deviceWidth,
+        position: 'absolute',
+        transform: [{translateX: 100}],
+        paddingRight: pxToDp(100),
+        paddingLeft: pxToDp(20),
+        paddingTop: pxToDp(20),
+        paddingBottom: pxToDp(20)
+    },
+    chapterMenuView: {
+        borderBottomWidth: 1,
+        borderStyle: 'solid',
+        borderBottomColor: '#999',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    chapterMenuText: {
+        fontSize: pxToDp(18),
+        paddingBottom: pxToDp(10),
+    },
+    chapterItemView: {
+        borderBottomWidth: 1,
+        borderStyle: 'solid',
+        borderBottomColor: '#999'
+    },
+    chapterItemText: {
+        paddingTop: pxToDp(12),
+        fontSize: pxToDp(16),
+        paddingBottom: pxToDp(12)
     }
 });
 export default IReader;
